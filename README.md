@@ -660,11 +660,17 @@ python3 -m unittest discover -s tests
 - `Pipeline`
   - 指一条从输入到输出的串行处理流程，例如 `导入 -> 切片 -> 提取 -> 校验 -> 生成产物`。
 
+- `Campaign`
+  - 指一次成批执行的测试活动。它通常包含一组测试用例、统一的执行配置、结果汇总和发现输出；本项目里的 `logic campaign` 就是一次完整的状态机逻辑漏洞测试批次。
+
 - `Procedure`
   - 指 3GPP 规范中的一个具体协议过程，例如 `RRC connection resume`、`RRC connection establishment`。
 
 - `Slice`
   - 指从原始规范中按 procedure 粒度裁切出来的一段文本，供后续提取、验证和检索使用。
+
+- `Fixture`
+  - 指为了开发、调试或测试而准备的固定输入样本。本项目里的 bootstrap 语料就是一类 fixture。
 
 - `Manifest`
   - 指某类输出的总清单文件，用于描述当前生成了哪些样本、是否通过检查、入口脚本是什么。
@@ -700,6 +706,9 @@ python3 -m unittest discover -s tests
 
 - `Candidate Target`
   - 指被拿来和 reference model 对比的候选目标。当前工程里先用故意放宽约束的本地模型来模拟真实实现偏差。
+
+- `Permissive`
+  - 字面意思是“放宽的、宽松的”。在本项目里通常指故意少做限制、容易错误接受输入的目标模型，用来验证 oracle 能不能抓到异常。
 
 ### 8.3 逻辑漏洞挖掘与有状态测试
 
@@ -775,6 +784,9 @@ python3 -m unittest discover -s tests
 
 - `Codex CLI`
   - 本项目当前用于大模型提取的命令行入口，通过 schema 约束把规范文本转成结构化 EFSM JSON。
+
+- `LLM`
+  - `Large Language Model`，大语言模型。本项目里它主要用于读协议文本并提取结构化语义，不直接负责最终漏洞判定。
 
 - `Extraction`
   - 指从规范文本中抽取结构化协议语义的过程，例如状态、消息、变量、定时器和转移关系。
