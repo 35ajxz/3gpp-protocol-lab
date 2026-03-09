@@ -252,142 +252,142 @@ python3 -m unittest discover -s tests
 - 最后一节补充了项目约定的本地忽略文件。
 
 ```text
-3gpp-protocol-lab/
-├── .gitignore
-├── Makefile
-├── README.md
-├── constraints/
-│   ├── messages.yaml
-│   └── properties.yaml
-├── corpus/
-│   ├── raw/
-│   │   └── ts-38.331-rel17-bootstrap.md
-│   ├── real/
-│   │   ├── raw/
-│   │   │   └── ts-38.331-v17.6.0.md
-│   │   └── slices/
-│   │       ├── 5.3.13-rrc-connection-resume.md
-│   │       ├── 5.3.3-rrc-connection-establishment.md
-│   │       └── 5.3.5.11-full-configuration.md
-│   └── slices/
-│       ├── 5.3.13-rrc-connection-resume.md
-│       ├── 5.3.3-rrc-connection-establishment.md
-│       └── 5.3.5.11-full-configuration-procedure.md
-├── docs/
-│   └── ROADMAP.md
-├── outputs/
-│   ├── asn1/
-│   │   ├── NR-RRC-Definitions.asn1
-│   │   ├── NR-RRC-Definitions.meta.json
-│   │   ├── validation.json
-│   │   └── pdus/
-│   │       ├── resume_request_boundary.uper.bin
-│   │       ├── resume_request_nominal.uper.bin
-│   │       ├── setup_request_boundary.uper.bin
-│   │       └── setup_request_nominal.uper.bin
-│   ├── efsm/
-│   │   ├── 5.3.13-rrc-connection-resume.json
-│   │   ├── 5.3.3-rrc-connection-establishment.json
-│   │   └── 5.3.5.11-full-configuration-procedure.json
-│   ├── efsm_real/
-│   │   ├── 5.3.13-rrc-connection-resume.json
-│   │   ├── 5.3.3-rrc-connection-establishment.json
-│   │   └── 5.3.5.11-full-configuration.json
-│   ├── formal/
-│   │   ├── nusmv/
-│   │   │   ├── 5.3.13-rrc-connection-resume.smv
-│   │   │   ├── 5.3.3-rrc-connection-establishment.smv
-│   │   │   └── 5.3.5.11-full-configuration-procedure.smv
-│   │   └── promela/
-│   │       ├── 5.3.13-rrc-connection-resume.pml
-│   │       ├── 5.3.3-rrc-connection-establishment.pml
-│   │       └── 5.3.5.11-full-configuration-procedure.pml
-│   ├── graph/
-│   │   └── 3gpp_lab.sqlite
-│   ├── mermaid/
-│   │   ├── 5.3.13-rrc-connection-resume.mmd
-│   │   ├── 5.3.3-rrc-connection-establishment.mmd
-│   │   └── 5.3.5.11-full-configuration-procedure.mmd
-│   ├── paths/
-│   │   ├── 5.3.13-rrc-connection-resume.json
-│   │   ├── 5.3.3-rrc-connection-establishment.json
-│   │   └── 5.3.5.11-full-configuration-procedure.json
-│   ├── properties/
-│   │   ├── 5.3.13-rrc-connection-resume.json
-│   │   ├── 5.3.3-rrc-connection-establishment.json
-│   │   └── 5.3.5.11-full-configuration-procedure.json
-│   ├── reports/
-│   │   ├── 5.3.13-rrc-connection-resume.json
-│   │   ├── 5.3.3-rrc-connection-establishment.json
-│   │   └── 5.3.5.11-full-configuration-procedure.json
-│   ├── reports_real/
-│   │   ├── 5.3.13-rrc-connection-resume.json
-│   │   ├── 5.3.3-rrc-connection-establishment.json
-│   │   ├── 5.3.5.11-full-configuration.json
-│   │   └── real_ingest.json
-│   ├── retrieval/
-│   │   └── last_query.json
-│   ├── runtime/
-│   │   ├── manifest.json
-│   │   ├── replay_runtime.sh
-│   │   ├── oai/
-│   │   │   └── docker-compose.runtime.yaml
-│   │   ├── pcaps/
-│   │   │   ├── 5.3.13-step-3-boundary.pcap
-│   │   │   ├── 5.3.13-step-3-nominal.pcap
-│   │   │   ├── 5.3.3-step-1-boundary.pcap
-│   │   │   └── 5.3.3-step-1-nominal.pcap
-│   │   ├── pdus/
-│   │   │   ├── 5.3.13-step-3-boundary.uper.bin
-│   │   │   ├── 5.3.13-step-3-nominal.uper.bin
-│   │   │   ├── 5.3.13-step-4-nominal.uper.bin
-│   │   │   ├── 5.3.3-step-1-boundary.uper.bin
-│   │   │   └── 5.3.3-step-1-nominal.uper.bin
-│   │   └── seeds/
-│   │       ├── 5.3.13-rrc-connection-resume.json
-│   │       ├── 5.3.3-rrc-connection-establishment.json
-│   │       └── 5.3.5.11-full-configuration.json
-│   └── seeds/
-│       ├── 5.3.13-rrc-connection-resume.json
-│       ├── 5.3.3-rrc-connection-establishment.json
-│       └── 5.3.5.11-full-configuration-procedure.json
-├── schemas/
-│   ├── efsm.codex.schema.json
-│   └── efsm.schema.json
-├── scripts/
-│   ├── __init__.py
-│   ├── build_graph.py
-│   ├── build_runtime_bundle.py
-│   ├── check_properties.py
-│   ├── common.py
-│   ├── docx_3gpp.py
-│   ├── export_formal.py
-│   ├── extract_asn1.py
-│   ├── extract_efsm.py
-│   ├── extract_efsm_llm.py
-│   ├── generate_paths.py
-│   ├── generate_seeds.py
-│   ├── ingest_real_spec.py
-│   ├── render_mermaid.py
-│   ├── retrieve.py
-│   ├── run_pipeline.py
-│   ├── run_real_pipeline.py
-│   ├── send_runtime_pdu.py
-│   ├── slice_procedures.py
-│   ├── validate_asn1.py
-│   ├── validate_efsm.py
-│   └── validate_efsm_real.py
-├── targets/
-│   └── oai/
-│       ├── README.md
-│       ├── docker-compose.yaml
-│       ├── gnb.sa.band78.106prb.rfsim.conf
-│       ├── mini_nonrf_config.yaml
-│       ├── mysql-healthcheck.sh
-│       ├── nrue.uicc.conf
-│       └── oai_db.sql
-└── tests/
-    └── test_pipeline.py
+3gpp-protocol-lab/                                              # 项目根目录
+├── .gitignore                                                  # Git 忽略规则，排除本地环境、缓存与原始 zip
+├── Makefile                                                    # 常用命令入口，如 venv / real / test
+├── README.md                                                   # 项目总说明文档
+├── constraints/                                                # 约束定义目录
+│   ├── messages.yaml                                           # 消息字段默认值、边界值与 seed 生成约束
+│   └── properties.yaml                                         # bootstrap 属性检查规则
+├── corpus/                                                     # 语料与切片目录
+│   ├── raw/                                                    # bootstrap 原始语料目录
+│   │   └── ts-38.331-rel17-bootstrap.md                        # bootstrap 示例规范文本
+│   ├── real/                                                   # 真实规范处理结果目录
+│   │   ├── raw/                                                # 真实规范标准化 Markdown 目录
+│   │   │   └── ts-38.331-v17.6.0.md                            # 从 38.331 提取后的真实 Markdown 主文档
+│   │   └── slices/                                             # 真实规范切片目录
+│   │       ├── 5.3.13-rrc-connection-resume.md                 # 真实 `RRC connection resume` 切片
+│   │       ├── 5.3.3-rrc-connection-establishment.md           # 真实 `RRC connection establishment` 切片
+│   │       └── 5.3.5.11-full-configuration.md                 # 真实 `full configuration` 切片
+│   └── slices/                                                 # bootstrap 切片目录
+│       ├── 5.3.13-rrc-connection-resume.md                     # bootstrap `RRC resume` 切片
+│       ├── 5.3.3-rrc-connection-establishment.md               # bootstrap `RRC establishment` 切片
+│       └── 5.3.5.11-full-configuration-procedure.md            # bootstrap `full configuration` 切片
+├── docs/                                                       # 其他文档目录
+│   └── ROADMAP.md                                              # 当天压缩版路线图
+├── outputs/                                                    # 所有已生成输出目录
+│   ├── asn1/                                                   # ASN.1 提取、编译与验证输出
+│   │   ├── NR-RRC-Definitions.asn1                             # 从规范中提取的 ASN.1 定义
+│   │   ├── NR-RRC-Definitions.meta.json                        # ASN.1 提取过程元数据
+│   │   ├── validation.json                                     # ASN.1 编解码 roundtrip 验证报告
+│   │   └── pdus/                                               # ASN.1 直接产出的示例 PDU
+│   │       ├── resume_request_boundary.uper.bin                # `RRCResumeRequest` 边界样本
+│   │       ├── resume_request_nominal.uper.bin                 # `RRCResumeRequest` 正常样本
+│   │       ├── setup_request_boundary.uper.bin                 # `RRCSetupRequest` 边界样本
+│   │       └── setup_request_nominal.uper.bin                  # `RRCSetupRequest` 正常样本
+│   ├── efsm/                                                   # bootstrap EFSM 输出目录
+│   │   ├── 5.3.13-rrc-connection-resume.json                   # bootstrap `RRC resume` EFSM
+│   │   ├── 5.3.3-rrc-connection-establishment.json             # bootstrap `RRC establishment` EFSM
+│   │   └── 5.3.5.11-full-configuration-procedure.json          # bootstrap `full configuration` EFSM
+│   ├── efsm_real/                                              # 真实文档经 Codex 提取后的 EFSM 输出目录
+│   │   ├── 5.3.13-rrc-connection-resume.json                   # real `RRC resume` EFSM
+│   │   ├── 5.3.3-rrc-connection-establishment.json             # real `RRC establishment` EFSM
+│   │   └── 5.3.5.11-full-configuration.json                    # real `full configuration` EFSM
+│   ├── formal/                                                 # 形式化导出目录
+│   │   ├── nusmv/                                              # NuSMV 文本模型目录
+│   │   │   ├── 5.3.13-rrc-connection-resume.smv                # `RRC resume` NuSMV 模型
+│   │   │   ├── 5.3.3-rrc-connection-establishment.smv          # `RRC establishment` NuSMV 模型
+│   │   │   └── 5.3.5.11-full-configuration-procedure.smv       # `full configuration` NuSMV 模型
+│   │   └── promela/                                            # Promela 文本模型目录
+│   │       ├── 5.3.13-rrc-connection-resume.pml                # `RRC resume` Promela 模型
+│   │       ├── 5.3.3-rrc-connection-establishment.pml          # `RRC establishment` Promela 模型
+│   │       └── 5.3.5.11-full-configuration-procedure.pml       # `full configuration` Promela 模型
+│   ├── graph/                                                  # 图谱与关系存储目录
+│   │   └── 3gpp_lab.sqlite                                     # SQLite 图谱数据库
+│   ├── mermaid/                                                # Mermaid 状态图目录
+│   │   ├── 5.3.13-rrc-connection-resume.mmd                    # `RRC resume` Mermaid 图
+│   │   ├── 5.3.3-rrc-connection-establishment.mmd              # `RRC establishment` Mermaid 图
+│   │   └── 5.3.5.11-full-configuration-procedure.mmd           # `full configuration` Mermaid 图
+│   ├── paths/                                                  # 路径规划输出目录
+│   │   ├── 5.3.13-rrc-connection-resume.json                   # `RRC resume` 路径规划
+│   │   ├── 5.3.3-rrc-connection-establishment.json             # `RRC establishment` 路径规划
+│   │   └── 5.3.5.11-full-configuration-procedure.json          # `full configuration` 路径规划
+│   ├── properties/                                             # 属性检查输出目录
+│   │   ├── 5.3.13-rrc-connection-resume.json                   # `RRC resume` 属性检查结果
+│   │   ├── 5.3.3-rrc-connection-establishment.json             # `RRC establishment` 属性检查结果
+│   │   └── 5.3.5.11-full-configuration-procedure.json          # `full configuration` 属性检查结果
+│   ├── reports/                                                # bootstrap 验证报告目录
+│   │   ├── 5.3.13-rrc-connection-resume.json                   # bootstrap `RRC resume` 报告
+│   │   ├── 5.3.3-rrc-connection-establishment.json             # bootstrap `RRC establishment` 报告
+│   │   └── 5.3.5.11-full-configuration-procedure.json          # bootstrap `full configuration` 报告
+│   ├── reports_real/                                           # 真实规范验证报告目录
+│   │   ├── 5.3.13-rrc-connection-resume.json                   # real `RRC resume` 验证报告
+│   │   ├── 5.3.3-rrc-connection-establishment.json             # real `RRC establishment` 验证报告
+│   │   ├── 5.3.5.11-full-configuration.json                    # real `full configuration` 验证报告
+│   │   └── real_ingest.json                                    # 真实文档导入统计报告
+│   ├── retrieval/                                              # 检索输出目录
+│   │   └── last_query.json                                     # 最近一次检索结果
+│   ├── runtime/                                                # runtime 打包输出目录
+│   │   ├── manifest.json                                       # runtime 汇总清单
+│   │   ├── replay_runtime.sh                                   # runtime 回放入口脚本
+│   │   ├── oai/                                                # OAI runtime override 目录
+│   │   │   └── docker-compose.runtime.yaml                     # 挂载 runtime 产物的 compose override
+│   │   ├── pcaps/                                              # 合成 pcap 样本目录
+│   │   │   ├── 5.3.13-step-3-boundary.pcap                     # `RRCResumeRequest` 边界 pcap
+│   │   │   ├── 5.3.13-step-3-nominal.pcap                      # `RRCResumeRequest` 正常 pcap
+│   │   │   ├── 5.3.3-step-1-boundary.pcap                      # `RRCSetupRequest` 边界 pcap
+│   │   │   └── 5.3.3-step-1-nominal.pcap                       # `RRCSetupRequest` 正常 pcap
+│   │   ├── pdus/                                               # runtime PDU 目录
+│   │   │   ├── 5.3.13-step-3-boundary.uper.bin                 # `RRCResumeRequest` 边界 PDU
+│   │   │   ├── 5.3.13-step-3-nominal.uper.bin                  # `RRCResumeRequest` 正常 PDU
+│   │   │   ├── 5.3.13-step-4-nominal.uper.bin                  # `RRCResume` 正常 PDU
+│   │   │   ├── 5.3.3-step-1-boundary.uper.bin                  # `RRCSetupRequest` 边界 PDU
+│   │   │   └── 5.3.3-step-1-nominal.uper.bin                   # `RRCSetupRequest` 正常 PDU
+│   │   └── seeds/                                              # runtime seed 目录
+│   │       ├── 5.3.13-rrc-connection-resume.json               # `RRC resume` runtime seed 包
+│   │       ├── 5.3.3-rrc-connection-establishment.json         # `RRC establishment` runtime seed 包
+│   │       └── 5.3.5.11-full-configuration.json                # `full configuration` runtime seed 包
+│   └── seeds/                                                  # bootstrap seed 输出目录
+│       ├── 5.3.13-rrc-connection-resume.json                   # bootstrap `RRC resume` seed 包
+│       ├── 5.3.3-rrc-connection-establishment.json             # bootstrap `RRC establishment` seed 包
+│       └── 5.3.5.11-full-configuration-procedure.json          # bootstrap `full configuration` seed 包
+├── schemas/                                                    # schema 定义目录
+│   ├── efsm.codex.schema.json                                  # Codex 输出约束 schema
+│   └── efsm.schema.json                                        # 通用 EFSM schema
+├── scripts/                                                    # 主实现脚本目录
+│   ├── __init__.py                                             # scripts 包初始化文件
+│   ├── build_graph.py                                          # 生成 SQLite 图谱
+│   ├── build_runtime_bundle.py                                 # 生成 runtime seeds / PDU / pcap / replay
+│   ├── check_properties.py                                     # 执行图属性检查
+│   ├── common.py                                               # 公共路径与读写工具函数
+│   ├── docx_3gpp.py                                            # 解析 3GPP docx 的辅助逻辑
+│   ├── export_formal.py                                        # 导出 Promela / NuSMV 模型
+│   ├── extract_asn1.py                                         # 从规范中提取 ASN.1
+│   ├── extract_efsm.py                                         # bootstrap EFSM 提取器
+│   ├── extract_efsm_llm.py                                     # 基于 Codex 的真实 EFSM 提取器
+│   ├── generate_paths.py                                       # 生成路径规划结果
+│   ├── generate_seeds.py                                       # 生成 bootstrap seeds
+│   ├── ingest_real_spec.py                                     # 导入真实规范并切片
+│   ├── render_mermaid.py                                       # 导出 Mermaid 图
+│   ├── retrieve.py                                             # 执行本地检索
+│   ├── run_pipeline.py                                         # bootstrap 总入口
+│   ├── run_real_pipeline.py                                    # real 总入口
+│   ├── send_runtime_pdu.py                                     # 发送 runtime PDU 的 UDP 注入脚本
+│   ├── slice_procedures.py                                     # 对语料进行 procedure 切片
+│   ├── validate_asn1.py                                        # ASN.1 编译与 roundtrip 校验
+│   ├── validate_efsm.py                                        # bootstrap EFSM 校验
+│   └── validate_efsm_real.py                                   # real EFSM 校验
+├── targets/                                                    # 目标系统配置目录
+│   └── oai/                                                    # OAI 目标配置子目录
+│       ├── README.md                                           # OAI 接入说明
+│       ├── docker-compose.yaml                                 # OAI 基础 compose 文件
+│       ├── gnb.sa.band78.106prb.rfsim.conf                     # OAI gNB 配置
+│       ├── mini_nonrf_config.yaml                              # 非射频最小配置
+│       ├── mysql-healthcheck.sh                                # OAI MySQL 健康检查脚本
+│       ├── nrue.uicc.conf                                      # OAI UE UICC 配置
+│       └── oai_db.sql                                          # OAI 初始化数据库脚本
+└── tests/                                                      # 测试目录
+    └── test_pipeline.py                                        # bootstrap 烟测与回归测试
 ```
 
 ### 5.1 重要目录职责说明
