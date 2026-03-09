@@ -1,7 +1,6 @@
 # 3GPP Protocol Lab
 
-一个面向 `TS 38.331 Rel-17` 的独立 3GPP 协议分析与模糊测试实验工程。  
-当前工程根目录为 `/home/huazi4ai/3gpp-protocol-lab`，不依赖外部 sibling 项目。
+一个面向 `TS 38.331 Rel-17` 的独立 3GPP 协议分析与模糊测试实验工程。
 
 本项目目前同时维护两条流水线：
 
@@ -204,14 +203,14 @@
 创建虚拟环境并安装依赖：
 
 ```bash
-cd /home/huazi4ai/3gpp-protocol-lab
+cd 3gpp-protocol-lab
 make venv
 ```
 
 或手工执行：
 
 ```bash
-cd /home/huazi4ai/3gpp-protocol-lab
+cd 3gpp-protocol-lab
 python3 -m venv .venv
 .venv/bin/pip install pyyaml asn1tools scapy
 ```
@@ -219,7 +218,7 @@ python3 -m venv .venv
 ### 4.2 运行 bootstrap 流水线
 
 ```bash
-cd /home/huazi4ai/3gpp-protocol-lab
+cd 3gpp-protocol-lab
 python3 scripts/run_pipeline.py
 ```
 
@@ -233,14 +232,14 @@ python3 scripts/run_pipeline.py
 执行：
 
 ```bash
-cd /home/huazi4ai/3gpp-protocol-lab
+cd 3gpp-protocol-lab
 .venv/bin/python scripts/run_real_pipeline.py
 ```
 
 ### 4.4 运行测试
 
 ```bash
-cd /home/huazi4ai/3gpp-protocol-lab
+cd 3gpp-protocol-lab
 python3 -m unittest discover -s tests
 ```
 
