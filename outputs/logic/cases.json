@@ -1,0 +1,273 @@
+[
+  {
+    "case_id": "5.3.3-setup_nominal-nominal",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "description": "Nominal RRC setup request, lower-layer transmit, and valid setup response.",
+    "perturbation": "nominal",
+    "steps": [
+      {
+        "event": "upper_layers_request_establishment"
+      },
+      {
+        "event": "lower_layers_transmit(RRCSetupRequest)"
+      },
+      {
+        "event": "receive(RRCSetup)",
+        "guard_contains": "response to RRCSetupRequest"
+      }
+    ]
+  },
+  {
+    "case_id": "5.3.3-setup_nominal-duplicate_last_step",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "description": "Nominal RRC setup request, lower-layer transmit, and valid setup response.",
+    "perturbation": "duplicate_last_step",
+    "steps": [
+      {
+        "event": "upper_layers_request_establishment"
+      },
+      {
+        "event": "lower_layers_transmit(RRCSetupRequest)"
+      },
+      {
+        "event": "receive(RRCSetup)",
+        "guard_contains": "response to RRCSetupRequest"
+      },
+      {
+        "event": "receive(RRCSetup)",
+        "guard_contains": "response to RRCSetupRequest"
+      }
+    ]
+  },
+  {
+    "case_id": "5.3.3-setup_nominal-move_last_to_front",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "description": "Nominal RRC setup request, lower-layer transmit, and valid setup response.",
+    "perturbation": "move_last_to_front",
+    "steps": [
+      {
+        "event": "receive(RRCSetup)",
+        "guard_contains": "response to RRCSetupRequest"
+      },
+      {
+        "event": "upper_layers_request_establishment"
+      },
+      {
+        "event": "lower_layers_transmit(RRCSetupRequest)"
+      }
+    ]
+  },
+  {
+    "case_id": "5.3.3-setup_nominal-drop_last_step",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "description": "Nominal RRC setup request, lower-layer transmit, and valid setup response.",
+    "perturbation": "drop_last_step",
+    "steps": [
+      {
+        "event": "upper_layers_request_establishment"
+      },
+      {
+        "event": "lower_layers_transmit(RRCSetupRequest)"
+      }
+    ]
+  },
+  {
+    "case_id": "5.3.3-setup_nominal-append_last_step",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "description": "Nominal RRC setup request, lower-layer transmit, and valid setup response.",
+    "perturbation": "append_last_step",
+    "steps": [
+      {
+        "event": "upper_layers_request_establishment"
+      },
+      {
+        "event": "lower_layers_transmit(RRCSetupRequest)"
+      },
+      {
+        "event": "receive(RRCSetup)",
+        "guard_contains": "response to RRCSetupRequest"
+      },
+      {
+        "event": "receive(RRCSetup)",
+        "guard_contains": "response to RRCSetupRequest"
+      }
+    ]
+  },
+  {
+    "case_id": "5.3.3-setup_nominal-insert_timeout_before_last",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "description": "Nominal RRC setup request, lower-layer transmit, and valid setup response.",
+    "perturbation": "insert_timeout_before_last",
+    "steps": [
+      {
+        "event": "upper_layers_request_establishment"
+      },
+      {
+        "event": "lower_layers_transmit(RRCSetupRequest)"
+      },
+      {
+        "event": "T300_expiry"
+      },
+      {
+        "event": "receive(RRCSetup)",
+        "guard_contains": "response to RRCSetupRequest"
+      }
+    ]
+  },
+  {
+    "case_id": "5.3.3-setup_nominal-cross_procedure_response_swap",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "description": "Nominal RRC setup request, lower-layer transmit, and valid setup response.",
+    "perturbation": "cross_procedure_response_swap",
+    "steps": [
+      {
+        "event": "upper_layers_request_establishment"
+      },
+      {
+        "event": "lower_layers_transmit(RRCSetupRequest)"
+      },
+      {
+        "event": "receive(RRCResume)"
+      }
+    ]
+  },
+  {
+    "case_id": "5.3.13-resume_nominal-nominal",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "description": "Nominal resume request, procedure initiation, and valid resume response.",
+    "perturbation": "nominal",
+    "steps": [
+      {
+        "event": "upper_layers_or_AS_resume_request"
+      },
+      {
+        "event": "resume_procedure_initiated"
+      },
+      {
+        "event": "receive(RRCResume)"
+      }
+    ]
+  },
+  {
+    "case_id": "5.3.13-resume_nominal-duplicate_last_step",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "description": "Nominal resume request, procedure initiation, and valid resume response.",
+    "perturbation": "duplicate_last_step",
+    "steps": [
+      {
+        "event": "upper_layers_or_AS_resume_request"
+      },
+      {
+        "event": "resume_procedure_initiated"
+      },
+      {
+        "event": "receive(RRCResume)"
+      },
+      {
+        "event": "receive(RRCResume)"
+      }
+    ]
+  },
+  {
+    "case_id": "5.3.13-resume_nominal-move_last_to_front",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "description": "Nominal resume request, procedure initiation, and valid resume response.",
+    "perturbation": "move_last_to_front",
+    "steps": [
+      {
+        "event": "receive(RRCResume)"
+      },
+      {
+        "event": "upper_layers_or_AS_resume_request"
+      },
+      {
+        "event": "resume_procedure_initiated"
+      }
+    ]
+  },
+  {
+    "case_id": "5.3.13-resume_nominal-drop_last_step",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "description": "Nominal resume request, procedure initiation, and valid resume response.",
+    "perturbation": "drop_last_step",
+    "steps": [
+      {
+        "event": "upper_layers_or_AS_resume_request"
+      },
+      {
+        "event": "resume_procedure_initiated"
+      }
+    ]
+  },
+  {
+    "case_id": "5.3.13-resume_nominal-append_last_step",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "description": "Nominal resume request, procedure initiation, and valid resume response.",
+    "perturbation": "append_last_step",
+    "steps": [
+      {
+        "event": "upper_layers_or_AS_resume_request"
+      },
+      {
+        "event": "resume_procedure_initiated"
+      },
+      {
+        "event": "receive(RRCResume)"
+      },
+      {
+        "event": "receive(RRCResume)"
+      }
+    ]
+  },
+  {
+    "case_id": "5.3.13-resume_nominal-insert_timeout_before_last",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "description": "Nominal resume request, procedure initiation, and valid resume response.",
+    "perturbation": "insert_timeout_before_last",
+    "steps": [
+      {
+        "event": "upper_layers_or_AS_resume_request"
+      },
+      {
+        "event": "resume_procedure_initiated"
+      },
+      {
+        "event": "T319_expiry_or_integrity_failure_or_SDT_failure"
+      },
+      {
+        "event": "receive(RRCResume)"
+      }
+    ]
+  },
+  {
+    "case_id": "5.3.13-resume_nominal-cross_procedure_response_swap",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "description": "Nominal resume request, procedure initiation, and valid resume response.",
+    "perturbation": "cross_procedure_response_swap",
+    "steps": [
+      {
+        "event": "upper_layers_or_AS_resume_request"
+      },
+      {
+        "event": "resume_procedure_initiated"
+      },
+      {
+        "event": "receive(RRCSetup)"
+      }
+    ]
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "reference_target": "reference_model",
+  "candidate_target": "permissive_logic_target",
+  "case_count": 14,
+  "finding_count": 25,
+  "cases_with_findings": 10,
+  "finding_types": {
+    "negative_acceptance": 9,
+    "state_divergence": 7,
+    "unexpected_rejection": 2,
+    "invariant_violation": 7
+  },
+  "procedures": {
+    "5.3.3": 7,
+    "5.3.13": 7
+  },
+  "pass": false
+}

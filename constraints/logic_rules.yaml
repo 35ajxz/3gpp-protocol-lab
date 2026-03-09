@@ -1,0 +1,91 @@
+procedures:
+  "5.3.3":
+    initial_state: RRC_IDLE
+    scenarios:
+      - id: setup_nominal
+        description: Nominal RRC setup request, lower-layer transmit, and valid setup response.
+        steps:
+          - event: upper_layers_request_establishment
+          - event: lower_layers_transmit(RRCSetupRequest)
+          - event: receive(RRCSetup)
+            guard_contains: response to RRCSetupRequest
+    invariants:
+      - id: setup_connected_requires_setup
+        type: require_history_event
+        trigger_state: RRC_CONNECTED
+        expected_event: receive(RRCSetup)
+      - id: setup_connected_requires_request
+        type: require_history_event
+        trigger_state: RRC_CONNECTED
+        expected_event: upper_layers_request_establishment
+      - id: setup_connected_requires_matching_guard
+        type: require_guard_for_final_state
+        trigger_state: RRC_CONNECTED
+        event: receive(RRCSetup)
+        guard_contains: response to RRCSetupRequest
+      - id: setup_success_clears_t300
+        type: require_timer_cleared
+        event: receive(RRCSetup)
+        guard_contains: response to RRCSetupRequest
+        timer: T300
+      - id: setup_never_accepts_resume_message
+        type: forbid_event
+        event: receive(RRCResume)
+      - id: setup_reject_must_not_connect
+        type: forbid_state_after_event
+        event: receive(RRCReject)
+        forbidden_state: RRC_CONNECTED
+    perturbations:
+      - type: duplicate_last_step
+      - type: move_last_to_front
+      - type: drop_last_step
+      - type: append_last_step
+      - type: insert_timeout_before_last
+        event: T300_expiry
+      - type: replace_last_step
+        event: receive(RRCResume)
+        label: cross_procedure_response_swap
+
+  "5.3.13":
+    initial_state: RRC_INACTIVE
+    scenarios:
+      - id: resume_nominal
+        description: Nominal resume request, procedure initiation, and valid resume response.
+        steps:
+          - event: upper_layers_or_AS_resume_request
+          - event: resume_procedure_initiated
+          - event: receive(RRCResume)
+    invariants:
+      - id: resume_connected_requires_resume_event
+        type: require_history_event
+        trigger_state: RRC_CONNECTED
+        expected_event: receive(RRCResume)
+      - id: resume_connected_requires_request_initiation
+        type: require_history_event
+        trigger_state: RRC_CONNECTED
+        expected_event: resume_procedure_initiated
+      - id: resume_success_clears_t319
+        type: require_timer_cleared
+        event: receive(RRCResume)
+        timer: T319
+      - id: resume_success_clears_t319a
+        type: require_timer_cleared
+        event: receive(RRCResume)
+        timer: T319a
+      - id: resume_never_accepts_setup_message
+        type: forbid_event
+        event: receive(RRCSetup)
+      - id: resume_failure_must_abort
+        type: require_state_after_event
+        event: T319_expiry_or_integrity_failure_or_SDT_failure
+        expected_state: PROCEDURE_ABORTED
+    perturbations:
+      - type: duplicate_last_step
+      - type: move_last_to_front
+      - type: drop_last_step
+      - type: append_last_step
+      - type: insert_timeout_before_last
+        event: T319_expiry_or_integrity_failure_or_SDT_failure
+      - type: replace_last_step
+        event: receive(RRCSetup)
+        label: cross_procedure_response_swap

@@ -1,0 +1,103 @@
+{
+  "case_id": "5.3.3-setup_nominal-drop_last_step",
+  "procedure_id": "5.3.3",
+  "scenario_id": "setup_nominal",
+  "perturbation": "drop_last_step",
+  "steps": [
+    {
+      "event": "upper_layers_request_establishment"
+    },
+    {
+      "event": "lower_layers_transmit(RRCSetupRequest)"
+    }
+  ],
+  "reference": {
+    "target": "reference_model",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "case_id": "5.3.3-setup_nominal-drop_last_step",
+    "perturbation": "drop_last_step",
+    "initial_state": "RRC_IDLE",
+    "final_state": "RRC_SETUP_REQUESTED",
+    "accepted_steps": 2,
+    "steps": [
+      {
+        "index": 1,
+        "event": "upper_layers_request_establishment",
+        "guard_contains": null,
+        "state_before": "RRC_IDLE",
+        "timers_before": [],
+        "accepted": true,
+        "state_after": "RRC_SETUP_REQUESTED",
+        "timers_after": [
+          "T300"
+        ],
+        "matched_transition_step": 1,
+        "matched_guard": "essential system information is valid and up to date, or sidelink condition in 5.3.3.1a is met",
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 2,
+        "event": "lower_layers_transmit(RRCSetupRequest)",
+        "guard_contains": null,
+        "state_before": "RRC_SETUP_REQUESTED",
+        "timers_before": [
+          "T300"
+        ],
+        "accepted": true,
+        "state_after": "RRC_SETUP_REQUESTED",
+        "timers_after": [
+          "T300"
+        ],
+        "matched_transition_step": 2,
+        "matched_guard": null,
+        "notes": "reference transition matched"
+      }
+    ]
+  },
+  "candidate": {
+    "target": "permissive_logic_target",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "case_id": "5.3.3-setup_nominal-drop_last_step",
+    "perturbation": "drop_last_step",
+    "initial_state": "RRC_IDLE",
+    "final_state": "RRC_SETUP_REQUESTED",
+    "accepted_steps": 2,
+    "steps": [
+      {
+        "index": 1,
+        "event": "upper_layers_request_establishment",
+        "guard_contains": null,
+        "state_before": "RRC_IDLE",
+        "timers_before": [],
+        "accepted": true,
+        "state_after": "RRC_SETUP_REQUESTED",
+        "timers_after": [
+          "T300"
+        ],
+        "matched_transition_step": 1,
+        "matched_guard": "essential system information is valid and up to date, or sidelink condition in 5.3.3.1a is met",
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 2,
+        "event": "lower_layers_transmit(RRCSetupRequest)",
+        "guard_contains": null,
+        "state_before": "RRC_SETUP_REQUESTED",
+        "timers_before": [
+          "T300"
+        ],
+        "accepted": true,
+        "state_after": "RRC_SETUP_REQUESTED",
+        "timers_after": [
+          "T300"
+        ],
+        "matched_transition_step": 2,
+        "matched_guard": null,
+        "notes": "reference transition matched"
+      }
+    ]
+  },
+  "findings": []
+}

@@ -1,0 +1,229 @@
+[
+  {
+    "type": "negative_acceptance",
+    "summary": "candidate accepted receive(RRCSetup) from RRC_CONNECTED while reference rejected it",
+    "step_index": 4,
+    "case_id": "5.3.3-setup_nominal-duplicate_last_step",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "perturbation": "duplicate_last_step"
+  },
+  {
+    "type": "negative_acceptance",
+    "summary": "candidate accepted receive(RRCSetup) from RRC_IDLE while reference rejected it",
+    "step_index": 1,
+    "case_id": "5.3.3-setup_nominal-move_last_to_front",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "perturbation": "move_last_to_front"
+  },
+  {
+    "type": "state_divergence",
+    "summary": "candidate reached RRC_CONNECTED while reference reached RRC_IDLE after receive(RRCSetup)",
+    "step_index": 1,
+    "case_id": "5.3.3-setup_nominal-move_last_to_front",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "perturbation": "move_last_to_front"
+  },
+  {
+    "type": "unexpected_rejection",
+    "summary": "candidate rejected upper_layers_request_establishment from RRC_CONNECTED while reference accepted it",
+    "step_index": 2,
+    "case_id": "5.3.3-setup_nominal-move_last_to_front",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "perturbation": "move_last_to_front"
+  },
+  {
+    "type": "state_divergence",
+    "summary": "candidate reached RRC_CONNECTED while reference reached RRC_SETUP_REQUESTED after upper_layers_request_establishment",
+    "step_index": 2,
+    "case_id": "5.3.3-setup_nominal-move_last_to_front",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "perturbation": "move_last_to_front"
+  },
+  {
+    "type": "unexpected_rejection",
+    "summary": "candidate rejected lower_layers_transmit(RRCSetupRequest) from RRC_CONNECTED while reference accepted it",
+    "step_index": 3,
+    "case_id": "5.3.3-setup_nominal-move_last_to_front",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "perturbation": "move_last_to_front"
+  },
+  {
+    "type": "state_divergence",
+    "summary": "candidate reached RRC_CONNECTED while reference reached RRC_SETUP_REQUESTED after lower_layers_transmit(RRCSetupRequest)",
+    "step_index": 3,
+    "case_id": "5.3.3-setup_nominal-move_last_to_front",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "perturbation": "move_last_to_front"
+  },
+  {
+    "type": "invariant_violation",
+    "invariant_id": "setup_connected_requires_request",
+    "summary": "final state RRC_CONNECTED was reached without required event upper_layers_request_establishment",
+    "case_id": "5.3.3-setup_nominal-move_last_to_front",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "perturbation": "move_last_to_front"
+  },
+  {
+    "type": "negative_acceptance",
+    "summary": "candidate accepted receive(RRCSetup) from RRC_CONNECTED while reference rejected it",
+    "step_index": 4,
+    "case_id": "5.3.3-setup_nominal-append_last_step",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "perturbation": "append_last_step"
+  },
+  {
+    "type": "negative_acceptance",
+    "summary": "candidate accepted receive(RRCSetup) from PROCEDURE_ABORTED while reference rejected it",
+    "step_index": 4,
+    "case_id": "5.3.3-setup_nominal-insert_timeout_before_last",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "perturbation": "insert_timeout_before_last"
+  },
+  {
+    "type": "state_divergence",
+    "summary": "candidate reached RRC_CONNECTED while reference reached PROCEDURE_ABORTED after receive(RRCSetup)",
+    "step_index": 4,
+    "case_id": "5.3.3-setup_nominal-insert_timeout_before_last",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "perturbation": "insert_timeout_before_last"
+  },
+  {
+    "type": "negative_acceptance",
+    "summary": "candidate accepted receive(RRCResume) from RRC_SETUP_REQUESTED while reference rejected it",
+    "step_index": 3,
+    "case_id": "5.3.3-setup_nominal-cross_procedure_response_swap",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "perturbation": "cross_procedure_response_swap"
+  },
+  {
+    "type": "state_divergence",
+    "summary": "candidate reached RRC_CONNECTED while reference reached RRC_SETUP_REQUESTED after receive(RRCResume)",
+    "step_index": 3,
+    "case_id": "5.3.3-setup_nominal-cross_procedure_response_swap",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "perturbation": "cross_procedure_response_swap"
+  },
+  {
+    "type": "invariant_violation",
+    "invariant_id": "setup_connected_requires_setup",
+    "summary": "final state RRC_CONNECTED was reached without required event receive(RRCSetup)",
+    "case_id": "5.3.3-setup_nominal-cross_procedure_response_swap",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "perturbation": "cross_procedure_response_swap"
+  },
+  {
+    "type": "invariant_violation",
+    "invariant_id": "setup_connected_requires_matching_guard",
+    "summary": "final state RRC_CONNECTED was reached without guard containing response to RRCSetupRequest",
+    "case_id": "5.3.3-setup_nominal-cross_procedure_response_swap",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "perturbation": "cross_procedure_response_swap"
+  },
+  {
+    "type": "invariant_violation",
+    "invariant_id": "setup_never_accepts_resume_message",
+    "summary": "forbidden event receive(RRCResume) was accepted in state RRC_SETUP_REQUESTED",
+    "step_index": 3,
+    "case_id": "5.3.3-setup_nominal-cross_procedure_response_swap",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "perturbation": "cross_procedure_response_swap"
+  },
+  {
+    "type": "negative_acceptance",
+    "summary": "candidate accepted receive(RRCResume) from RRC_CONNECTED while reference rejected it",
+    "step_index": 4,
+    "case_id": "5.3.13-resume_nominal-duplicate_last_step",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "perturbation": "duplicate_last_step"
+  },
+  {
+    "type": "invariant_violation",
+    "invariant_id": "resume_connected_requires_request_initiation",
+    "summary": "final state RRC_CONNECTED was reached without required event resume_procedure_initiated",
+    "case_id": "5.3.13-resume_nominal-move_last_to_front",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "perturbation": "move_last_to_front"
+  },
+  {
+    "type": "negative_acceptance",
+    "summary": "candidate accepted receive(RRCResume) from RRC_CONNECTED while reference rejected it",
+    "step_index": 4,
+    "case_id": "5.3.13-resume_nominal-append_last_step",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "perturbation": "append_last_step"
+  },
+  {
+    "type": "negative_acceptance",
+    "summary": "candidate accepted receive(RRCResume) from PROCEDURE_ABORTED while reference rejected it",
+    "step_index": 4,
+    "case_id": "5.3.13-resume_nominal-insert_timeout_before_last",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "perturbation": "insert_timeout_before_last"
+  },
+  {
+    "type": "state_divergence",
+    "summary": "candidate reached RRC_CONNECTED while reference reached PROCEDURE_ABORTED after receive(RRCResume)",
+    "step_index": 4,
+    "case_id": "5.3.13-resume_nominal-insert_timeout_before_last",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "perturbation": "insert_timeout_before_last"
+  },
+  {
+    "type": "negative_acceptance",
+    "summary": "candidate accepted receive(RRCSetup) from RRC_INACTIVE while reference rejected it",
+    "step_index": 3,
+    "case_id": "5.3.13-resume_nominal-cross_procedure_response_swap",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "perturbation": "cross_procedure_response_swap"
+  },
+  {
+    "type": "state_divergence",
+    "summary": "candidate reached RRC_CONNECTED while reference reached RRC_INACTIVE after receive(RRCSetup)",
+    "step_index": 3,
+    "case_id": "5.3.13-resume_nominal-cross_procedure_response_swap",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "perturbation": "cross_procedure_response_swap"
+  },
+  {
+    "type": "invariant_violation",
+    "invariant_id": "resume_connected_requires_resume_event",
+    "summary": "final state RRC_CONNECTED was reached without required event receive(RRCResume)",
+    "case_id": "5.3.13-resume_nominal-cross_procedure_response_swap",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "perturbation": "cross_procedure_response_swap"
+  },
+  {
+    "type": "invariant_violation",
+    "invariant_id": "resume_never_accepts_setup_message",
+    "summary": "forbidden event receive(RRCSetup) was accepted in state RRC_INACTIVE",
+    "step_index": 3,
+    "case_id": "5.3.13-resume_nominal-cross_procedure_response_swap",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "perturbation": "cross_procedure_response_swap"
+  }
+]

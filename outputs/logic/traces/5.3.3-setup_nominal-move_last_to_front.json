@@ -1,0 +1,163 @@
+{
+  "case_id": "5.3.3-setup_nominal-move_last_to_front",
+  "procedure_id": "5.3.3",
+  "scenario_id": "setup_nominal",
+  "perturbation": "move_last_to_front",
+  "steps": [
+    {
+      "event": "receive(RRCSetup)",
+      "guard_contains": "response to RRCSetupRequest"
+    },
+    {
+      "event": "upper_layers_request_establishment"
+    },
+    {
+      "event": "lower_layers_transmit(RRCSetupRequest)"
+    }
+  ],
+  "reference": {
+    "target": "reference_model",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "case_id": "5.3.3-setup_nominal-move_last_to_front",
+    "perturbation": "move_last_to_front",
+    "initial_state": "RRC_IDLE",
+    "final_state": "RRC_SETUP_REQUESTED",
+    "accepted_steps": 2,
+    "steps": [
+      {
+        "index": 1,
+        "event": "receive(RRCSetup)",
+        "guard_contains": "response to RRCSetupRequest",
+        "state_before": "RRC_IDLE",
+        "timers_before": [],
+        "accepted": false,
+        "state_after": "RRC_IDLE",
+        "timers_after": [],
+        "matched_transition_step": null,
+        "matched_guard": null,
+        "notes": "no matching transition"
+      },
+      {
+        "index": 2,
+        "event": "upper_layers_request_establishment",
+        "guard_contains": null,
+        "state_before": "RRC_IDLE",
+        "timers_before": [],
+        "accepted": true,
+        "state_after": "RRC_SETUP_REQUESTED",
+        "timers_after": [
+          "T300"
+        ],
+        "matched_transition_step": 1,
+        "matched_guard": "essential system information is valid and up to date, or sidelink condition in 5.3.3.1a is met",
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 3,
+        "event": "lower_layers_transmit(RRCSetupRequest)",
+        "guard_contains": null,
+        "state_before": "RRC_SETUP_REQUESTED",
+        "timers_before": [
+          "T300"
+        ],
+        "accepted": true,
+        "state_after": "RRC_SETUP_REQUESTED",
+        "timers_after": [
+          "T300"
+        ],
+        "matched_transition_step": 2,
+        "matched_guard": null,
+        "notes": "reference transition matched"
+      }
+    ]
+  },
+  "candidate": {
+    "target": "permissive_logic_target",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "case_id": "5.3.3-setup_nominal-move_last_to_front",
+    "perturbation": "move_last_to_front",
+    "initial_state": "RRC_IDLE",
+    "final_state": "RRC_CONNECTED",
+    "accepted_steps": 1,
+    "steps": [
+      {
+        "index": 1,
+        "event": "receive(RRCSetup)",
+        "guard_contains": "response to RRCSetupRequest",
+        "state_before": "RRC_IDLE",
+        "timers_before": [],
+        "accepted": true,
+        "state_after": "RRC_CONNECTED",
+        "timers_after": [],
+        "matched_transition_step": "synthetic-cross-accept",
+        "matched_guard": "response to RRCSetupRequest",
+        "notes": "accepted setup/resume control-plane response in permissive mode"
+      },
+      {
+        "index": 2,
+        "event": "upper_layers_request_establishment",
+        "guard_contains": null,
+        "state_before": "RRC_CONNECTED",
+        "timers_before": [],
+        "accepted": false,
+        "state_after": "RRC_CONNECTED",
+        "timers_after": [],
+        "matched_transition_step": null,
+        "matched_guard": null,
+        "notes": "no matching transition"
+      },
+      {
+        "index": 3,
+        "event": "lower_layers_transmit(RRCSetupRequest)",
+        "guard_contains": null,
+        "state_before": "RRC_CONNECTED",
+        "timers_before": [],
+        "accepted": false,
+        "state_after": "RRC_CONNECTED",
+        "timers_after": [],
+        "matched_transition_step": null,
+        "matched_guard": null,
+        "notes": "no matching transition"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "type": "negative_acceptance",
+      "summary": "candidate accepted receive(RRCSetup) from RRC_IDLE while reference rejected it",
+      "step_index": 1
+    },
+    {
+      "type": "state_divergence",
+      "summary": "candidate reached RRC_CONNECTED while reference reached RRC_IDLE after receive(RRCSetup)",
+      "step_index": 1
+    },
+    {
+      "type": "unexpected_rejection",
+      "summary": "candidate rejected upper_layers_request_establishment from RRC_CONNECTED while reference accepted it",
+      "step_index": 2
+    },
+    {
+      "type": "state_divergence",
+      "summary": "candidate reached RRC_CONNECTED while reference reached RRC_SETUP_REQUESTED after upper_layers_request_establishment",
+      "step_index": 2
+    },
+    {
+      "type": "unexpected_rejection",
+      "summary": "candidate rejected lower_layers_transmit(RRCSetupRequest) from RRC_CONNECTED while reference accepted it",
+      "step_index": 3
+    },
+    {
+      "type": "state_divergence",
+      "summary": "candidate reached RRC_CONNECTED while reference reached RRC_SETUP_REQUESTED after lower_layers_transmit(RRCSetupRequest)",
+      "step_index": 3
+    },
+    {
+      "type": "invariant_violation",
+      "invariant_id": "setup_connected_requires_request",
+      "summary": "final state RRC_CONNECTED was reached without required event upper_layers_request_establishment"
+    }
+  ]
+}

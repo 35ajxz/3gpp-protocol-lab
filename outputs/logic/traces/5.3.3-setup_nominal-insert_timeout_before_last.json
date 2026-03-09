@@ -1,0 +1,187 @@
+{
+  "case_id": "5.3.3-setup_nominal-insert_timeout_before_last",
+  "procedure_id": "5.3.3",
+  "scenario_id": "setup_nominal",
+  "perturbation": "insert_timeout_before_last",
+  "steps": [
+    {
+      "event": "upper_layers_request_establishment"
+    },
+    {
+      "event": "lower_layers_transmit(RRCSetupRequest)"
+    },
+    {
+      "event": "T300_expiry"
+    },
+    {
+      "event": "receive(RRCSetup)",
+      "guard_contains": "response to RRCSetupRequest"
+    }
+  ],
+  "reference": {
+    "target": "reference_model",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "case_id": "5.3.3-setup_nominal-insert_timeout_before_last",
+    "perturbation": "insert_timeout_before_last",
+    "initial_state": "RRC_IDLE",
+    "final_state": "PROCEDURE_ABORTED",
+    "accepted_steps": 3,
+    "steps": [
+      {
+        "index": 1,
+        "event": "upper_layers_request_establishment",
+        "guard_contains": null,
+        "state_before": "RRC_IDLE",
+        "timers_before": [],
+        "accepted": true,
+        "state_after": "RRC_SETUP_REQUESTED",
+        "timers_after": [
+          "T300"
+        ],
+        "matched_transition_step": 1,
+        "matched_guard": "essential system information is valid and up to date, or sidelink condition in 5.3.3.1a is met",
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 2,
+        "event": "lower_layers_transmit(RRCSetupRequest)",
+        "guard_contains": null,
+        "state_before": "RRC_SETUP_REQUESTED",
+        "timers_before": [
+          "T300"
+        ],
+        "accepted": true,
+        "state_after": "RRC_SETUP_REQUESTED",
+        "timers_after": [
+          "T300"
+        ],
+        "matched_transition_step": 2,
+        "matched_guard": null,
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 3,
+        "event": "T300_expiry",
+        "guard_contains": null,
+        "state_before": "RRC_SETUP_REQUESTED",
+        "timers_before": [
+          "T300"
+        ],
+        "accepted": true,
+        "state_after": "PROCEDURE_ABORTED",
+        "timers_after": [
+          "T300"
+        ],
+        "matched_transition_step": 7,
+        "matched_guard": null,
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 4,
+        "event": "receive(RRCSetup)",
+        "guard_contains": "response to RRCSetupRequest",
+        "state_before": "PROCEDURE_ABORTED",
+        "timers_before": [
+          "T300"
+        ],
+        "accepted": false,
+        "state_after": "PROCEDURE_ABORTED",
+        "timers_after": [
+          "T300"
+        ],
+        "matched_transition_step": null,
+        "matched_guard": null,
+        "notes": "no matching transition"
+      }
+    ]
+  },
+  "candidate": {
+    "target": "permissive_logic_target",
+    "procedure_id": "5.3.3",
+    "scenario_id": "setup_nominal",
+    "case_id": "5.3.3-setup_nominal-insert_timeout_before_last",
+    "perturbation": "insert_timeout_before_last",
+    "initial_state": "RRC_IDLE",
+    "final_state": "RRC_CONNECTED",
+    "accepted_steps": 4,
+    "steps": [
+      {
+        "index": 1,
+        "event": "upper_layers_request_establishment",
+        "guard_contains": null,
+        "state_before": "RRC_IDLE",
+        "timers_before": [],
+        "accepted": true,
+        "state_after": "RRC_SETUP_REQUESTED",
+        "timers_after": [
+          "T300"
+        ],
+        "matched_transition_step": 1,
+        "matched_guard": "essential system information is valid and up to date, or sidelink condition in 5.3.3.1a is met",
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 2,
+        "event": "lower_layers_transmit(RRCSetupRequest)",
+        "guard_contains": null,
+        "state_before": "RRC_SETUP_REQUESTED",
+        "timers_before": [
+          "T300"
+        ],
+        "accepted": true,
+        "state_after": "RRC_SETUP_REQUESTED",
+        "timers_after": [
+          "T300"
+        ],
+        "matched_transition_step": 2,
+        "matched_guard": null,
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 3,
+        "event": "T300_expiry",
+        "guard_contains": null,
+        "state_before": "RRC_SETUP_REQUESTED",
+        "timers_before": [
+          "T300"
+        ],
+        "accepted": true,
+        "state_after": "PROCEDURE_ABORTED",
+        "timers_after": [
+          "T300"
+        ],
+        "matched_transition_step": 7,
+        "matched_guard": null,
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 4,
+        "event": "receive(RRCSetup)",
+        "guard_contains": "response to RRCSetupRequest",
+        "state_before": "PROCEDURE_ABORTED",
+        "timers_before": [
+          "T300"
+        ],
+        "accepted": true,
+        "state_after": "RRC_CONNECTED",
+        "timers_after": [],
+        "matched_transition_step": "synthetic-cross-accept",
+        "matched_guard": "response to RRCSetupRequest",
+        "notes": "accepted setup/resume control-plane response in permissive mode"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "type": "negative_acceptance",
+      "summary": "candidate accepted receive(RRCSetup) from PROCEDURE_ABORTED while reference rejected it",
+      "step_index": 4
+    },
+    {
+      "type": "state_divergence",
+      "summary": "candidate reached RRC_CONNECTED while reference reached PROCEDURE_ABORTED after receive(RRCSetup)",
+      "step_index": 4
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "case_id": "5.3.13-resume_nominal-duplicate_last_step",
+  "procedure_id": "5.3.13",
+  "scenario_id": "resume_nominal",
+  "perturbation": "duplicate_last_step",
+  "steps": [
+    {
+      "event": "upper_layers_or_AS_resume_request"
+    },
+    {
+      "event": "resume_procedure_initiated"
+    },
+    {
+      "event": "receive(RRCResume)"
+    },
+    {
+      "event": "receive(RRCResume)"
+    }
+  ],
+  "reference": {
+    "target": "reference_model",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "case_id": "5.3.13-resume_nominal-duplicate_last_step",
+    "perturbation": "duplicate_last_step",
+    "initial_state": "RRC_INACTIVE",
+    "final_state": "RRC_CONNECTED",
+    "accepted_steps": 3,
+    "steps": [
+      {
+        "index": 1,
+        "event": "upper_layers_or_AS_resume_request",
+        "guard_contains": null,
+        "state_before": "RRC_INACTIVE",
+        "timers_before": [],
+        "accepted": true,
+        "state_after": "RRC_INACTIVE",
+        "timers_after": [],
+        "matched_transition_step": 1,
+        "matched_guard": "valid and up to date essential system information available",
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 2,
+        "event": "resume_procedure_initiated",
+        "guard_contains": null,
+        "state_before": "RRC_INACTIVE",
+        "timers_before": [],
+        "accepted": true,
+        "state_after": "RRC_INACTIVE",
+        "timers_after": [
+          "T319",
+          "T319a"
+        ],
+        "matched_transition_step": 3,
+        "matched_guard": null,
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 3,
+        "event": "receive(RRCResume)",
+        "guard_contains": null,
+        "state_before": "RRC_INACTIVE",
+        "timers_before": [
+          "T319",
+          "T319a"
+        ],
+        "accepted": true,
+        "state_after": "RRC_CONNECTED",
+        "timers_after": [],
+        "matched_transition_step": 4,
+        "matched_guard": null,
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 4,
+        "event": "receive(RRCResume)",
+        "guard_contains": null,
+        "state_before": "RRC_CONNECTED",
+        "timers_before": [],
+        "accepted": false,
+        "state_after": "RRC_CONNECTED",
+        "timers_after": [],
+        "matched_transition_step": null,
+        "matched_guard": null,
+        "notes": "no matching transition"
+      }
+    ]
+  },
+  "candidate": {
+    "target": "permissive_logic_target",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "case_id": "5.3.13-resume_nominal-duplicate_last_step",
+    "perturbation": "duplicate_last_step",
+    "initial_state": "RRC_INACTIVE",
+    "final_state": "RRC_CONNECTED",
+    "accepted_steps": 4,
+    "steps": [
+      {
+        "index": 1,
+        "event": "upper_layers_or_AS_resume_request",
+        "guard_contains": null,
+        "state_before": "RRC_INACTIVE",
+        "timers_before": [],
+        "accepted": true,
+        "state_after": "RRC_INACTIVE",
+        "timers_after": [],
+        "matched_transition_step": 1,
+        "matched_guard": "valid and up to date essential system information available",
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 2,
+        "event": "resume_procedure_initiated",
+        "guard_contains": null,
+        "state_before": "RRC_INACTIVE",
+        "timers_before": [],
+        "accepted": true,
+        "state_after": "RRC_INACTIVE",
+        "timers_after": [
+          "T319",
+          "T319a"
+        ],
+        "matched_transition_step": 3,
+        "matched_guard": null,
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 3,
+        "event": "receive(RRCResume)",
+        "guard_contains": null,
+        "state_before": "RRC_INACTIVE",
+        "timers_before": [
+          "T319",
+          "T319a"
+        ],
+        "accepted": true,
+        "state_after": "RRC_CONNECTED",
+        "timers_after": [],
+        "matched_transition_step": 4,
+        "matched_guard": null,
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 4,
+        "event": "receive(RRCResume)",
+        "guard_contains": null,
+        "state_before": "RRC_CONNECTED",
+        "timers_before": [],
+        "accepted": true,
+        "state_after": "RRC_CONNECTED",
+        "timers_after": [],
+        "matched_transition_step": "synthetic-cross-accept",
+        "matched_guard": null,
+        "notes": "accepted resume/setup response in permissive mode"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "type": "negative_acceptance",
+      "summary": "candidate accepted receive(RRCResume) from RRC_CONNECTED while reference rejected it",
+      "step_index": 4
+    }
+  ]
+}

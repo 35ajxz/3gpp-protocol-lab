@@ -1,0 +1,187 @@
+{
+  "case_id": "5.3.13-resume_nominal-insert_timeout_before_last",
+  "procedure_id": "5.3.13",
+  "scenario_id": "resume_nominal",
+  "perturbation": "insert_timeout_before_last",
+  "steps": [
+    {
+      "event": "upper_layers_or_AS_resume_request"
+    },
+    {
+      "event": "resume_procedure_initiated"
+    },
+    {
+      "event": "T319_expiry_or_integrity_failure_or_SDT_failure"
+    },
+    {
+      "event": "receive(RRCResume)"
+    }
+  ],
+  "reference": {
+    "target": "reference_model",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "case_id": "5.3.13-resume_nominal-insert_timeout_before_last",
+    "perturbation": "insert_timeout_before_last",
+    "initial_state": "RRC_INACTIVE",
+    "final_state": "PROCEDURE_ABORTED",
+    "accepted_steps": 3,
+    "steps": [
+      {
+        "index": 1,
+        "event": "upper_layers_or_AS_resume_request",
+        "guard_contains": null,
+        "state_before": "RRC_INACTIVE",
+        "timers_before": [],
+        "accepted": true,
+        "state_after": "RRC_INACTIVE",
+        "timers_after": [],
+        "matched_transition_step": 1,
+        "matched_guard": "valid and up to date essential system information available",
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 2,
+        "event": "resume_procedure_initiated",
+        "guard_contains": null,
+        "state_before": "RRC_INACTIVE",
+        "timers_before": [],
+        "accepted": true,
+        "state_after": "RRC_INACTIVE",
+        "timers_after": [
+          "T319",
+          "T319a"
+        ],
+        "matched_transition_step": 3,
+        "matched_guard": null,
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 3,
+        "event": "T319_expiry_or_integrity_failure_or_SDT_failure",
+        "guard_contains": null,
+        "state_before": "RRC_INACTIVE",
+        "timers_before": [
+          "T319",
+          "T319a"
+        ],
+        "accepted": true,
+        "state_after": "PROCEDURE_ABORTED",
+        "timers_after": [
+          "T319",
+          "T319a"
+        ],
+        "matched_transition_step": 5,
+        "matched_guard": null,
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 4,
+        "event": "receive(RRCResume)",
+        "guard_contains": null,
+        "state_before": "PROCEDURE_ABORTED",
+        "timers_before": [
+          "T319",
+          "T319a"
+        ],
+        "accepted": false,
+        "state_after": "PROCEDURE_ABORTED",
+        "timers_after": [
+          "T319",
+          "T319a"
+        ],
+        "matched_transition_step": null,
+        "matched_guard": null,
+        "notes": "no matching transition"
+      }
+    ]
+  },
+  "candidate": {
+    "target": "permissive_logic_target",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "case_id": "5.3.13-resume_nominal-insert_timeout_before_last",
+    "perturbation": "insert_timeout_before_last",
+    "initial_state": "RRC_INACTIVE",
+    "final_state": "RRC_CONNECTED",
+    "accepted_steps": 4,
+    "steps": [
+      {
+        "index": 1,
+        "event": "upper_layers_or_AS_resume_request",
+        "guard_contains": null,
+        "state_before": "RRC_INACTIVE",
+        "timers_before": [],
+        "accepted": true,
+        "state_after": "RRC_INACTIVE",
+        "timers_after": [],
+        "matched_transition_step": 1,
+        "matched_guard": "valid and up to date essential system information available",
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 2,
+        "event": "resume_procedure_initiated",
+        "guard_contains": null,
+        "state_before": "RRC_INACTIVE",
+        "timers_before": [],
+        "accepted": true,
+        "state_after": "RRC_INACTIVE",
+        "timers_after": [
+          "T319",
+          "T319a"
+        ],
+        "matched_transition_step": 3,
+        "matched_guard": null,
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 3,
+        "event": "T319_expiry_or_integrity_failure_or_SDT_failure",
+        "guard_contains": null,
+        "state_before": "RRC_INACTIVE",
+        "timers_before": [
+          "T319",
+          "T319a"
+        ],
+        "accepted": true,
+        "state_after": "PROCEDURE_ABORTED",
+        "timers_after": [
+          "T319",
+          "T319a"
+        ],
+        "matched_transition_step": 5,
+        "matched_guard": null,
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 4,
+        "event": "receive(RRCResume)",
+        "guard_contains": null,
+        "state_before": "PROCEDURE_ABORTED",
+        "timers_before": [
+          "T319",
+          "T319a"
+        ],
+        "accepted": true,
+        "state_after": "RRC_CONNECTED",
+        "timers_after": [],
+        "matched_transition_step": "synthetic-cross-accept",
+        "matched_guard": null,
+        "notes": "accepted resume/setup response in permissive mode"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "type": "negative_acceptance",
+      "summary": "candidate accepted receive(RRCResume) from PROCEDURE_ABORTED while reference rejected it",
+      "step_index": 4
+    },
+    {
+      "type": "state_divergence",
+      "summary": "candidate reached RRC_CONNECTED while reference reached PROCEDURE_ABORTED after receive(RRCResume)",
+      "step_index": 4
+    }
+  ]
+}

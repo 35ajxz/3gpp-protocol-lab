@@ -1,0 +1,126 @@
+{
+  "case_id": "5.3.13-resume_nominal-move_last_to_front",
+  "procedure_id": "5.3.13",
+  "scenario_id": "resume_nominal",
+  "perturbation": "move_last_to_front",
+  "steps": [
+    {
+      "event": "receive(RRCResume)"
+    },
+    {
+      "event": "upper_layers_or_AS_resume_request"
+    },
+    {
+      "event": "resume_procedure_initiated"
+    }
+  ],
+  "reference": {
+    "target": "reference_model",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "case_id": "5.3.13-resume_nominal-move_last_to_front",
+    "perturbation": "move_last_to_front",
+    "initial_state": "RRC_INACTIVE",
+    "final_state": "RRC_CONNECTED",
+    "accepted_steps": 1,
+    "steps": [
+      {
+        "index": 1,
+        "event": "receive(RRCResume)",
+        "guard_contains": null,
+        "state_before": "RRC_INACTIVE",
+        "timers_before": [],
+        "accepted": true,
+        "state_after": "RRC_CONNECTED",
+        "timers_after": [],
+        "matched_transition_step": 4,
+        "matched_guard": null,
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 2,
+        "event": "upper_layers_or_AS_resume_request",
+        "guard_contains": null,
+        "state_before": "RRC_CONNECTED",
+        "timers_before": [],
+        "accepted": false,
+        "state_after": "RRC_CONNECTED",
+        "timers_after": [],
+        "matched_transition_step": null,
+        "matched_guard": null,
+        "notes": "no matching transition"
+      },
+      {
+        "index": 3,
+        "event": "resume_procedure_initiated",
+        "guard_contains": null,
+        "state_before": "RRC_CONNECTED",
+        "timers_before": [],
+        "accepted": false,
+        "state_after": "RRC_CONNECTED",
+        "timers_after": [],
+        "matched_transition_step": null,
+        "matched_guard": null,
+        "notes": "no matching transition"
+      }
+    ]
+  },
+  "candidate": {
+    "target": "permissive_logic_target",
+    "procedure_id": "5.3.13",
+    "scenario_id": "resume_nominal",
+    "case_id": "5.3.13-resume_nominal-move_last_to_front",
+    "perturbation": "move_last_to_front",
+    "initial_state": "RRC_INACTIVE",
+    "final_state": "RRC_CONNECTED",
+    "accepted_steps": 1,
+    "steps": [
+      {
+        "index": 1,
+        "event": "receive(RRCResume)",
+        "guard_contains": null,
+        "state_before": "RRC_INACTIVE",
+        "timers_before": [],
+        "accepted": true,
+        "state_after": "RRC_CONNECTED",
+        "timers_after": [],
+        "matched_transition_step": 4,
+        "matched_guard": null,
+        "notes": "reference transition matched"
+      },
+      {
+        "index": 2,
+        "event": "upper_layers_or_AS_resume_request",
+        "guard_contains": null,
+        "state_before": "RRC_CONNECTED",
+        "timers_before": [],
+        "accepted": false,
+        "state_after": "RRC_CONNECTED",
+        "timers_after": [],
+        "matched_transition_step": null,
+        "matched_guard": null,
+        "notes": "no matching transition"
+      },
+      {
+        "index": 3,
+        "event": "resume_procedure_initiated",
+        "guard_contains": null,
+        "state_before": "RRC_CONNECTED",
+        "timers_before": [],
+        "accepted": false,
+        "state_after": "RRC_CONNECTED",
+        "timers_after": [],
+        "matched_transition_step": null,
+        "matched_guard": null,
+        "notes": "no matching transition"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "type": "invariant_violation",
+      "invariant_id": "resume_connected_requires_request_initiation",
+      "summary": "final state RRC_CONNECTED was reached without required event resume_procedure_initiated"
+    }
+  ]
+}

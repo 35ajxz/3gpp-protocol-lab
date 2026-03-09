@@ -1,11 +1,12 @@
 # 3GPP Protocol Lab
 
-一个面向 `TS 38.331 Rel-17` 的独立 3GPP 协议分析与模糊测试实验工程。
+一个面向 `TS 38.331 Rel-17` 的独立 3GPP 协议分析、状态机逻辑漏洞挖掘与模糊测试实验工程。
 
-本项目目前同时维护两条流水线：
+本项目目前同时维护三条互补流水线：
 
 - `bootstrap`：轻依赖、本地可快速重跑的最小闭环。
 - `real`：真实文档接入、真实 ASN.1 编译、真实 runtime 产物生成。
+- `logic`：面向协议状态机逻辑漏洞的有状态序列测试与 oracle 判定闭环。
 
 ## 1. 项目研究背景和要解决的工程/技术问题
 
@@ -38,7 +39,13 @@
 5. runtime 输入生成问题  
    从 EFSM 和 ASN.1 结果出发，生成 `seed -> PDU -> pcap -> replay` 的可执行输入物。
 
-6. 独立工程化问题  
+6. 状态机逻辑漏洞判定问题  
+   不是只看消息能不能编码，而是要判断目标是否在错误状态接受了错误消息、走入了错误状态、违反了协议不变量。
+
+7. 有状态 fuzz 问题  
+   测试输入不再只是单条消息，而是带顺序、上下文和定时器扰动的消息序列，例如 `duplicate / reorder / drop / timeout / cross-procedure swap`。
+
+8. 独立工程化问题  
    把工程做成一个单独项目，具备本地命令入口、中文文档、固定目录结构、可追踪输出，不依赖旧工程目录。
 
 ## 2. 本项目的技术选型和整体架构
@@ -58,6 +65,8 @@
   - 用于 bootstrap 路线中的本地检索和结构化关系组织。
 - 形式化输出：`Promela / NuSMV`
   - 当前先生成形式化模型文本，为后续接入外部 model checker 预留接口。
+- 状态机逻辑 fuzz 与 oracle：`YAML` + Python 有状态执行器
+  - 用于定义协议不变量、禁止转移、过程混淆扰动和 reference/candidate 差异判定。
 - runtime 产物生成：`Scapy` + 本地 UDP 注入脚本
   - 用于把 EFSM/ASN.1 结果转换成 `.uper.bin`、`.pcap` 和可执行 replay 入口。
 - 目标系统接入：项目内 `targets/oai/*`
@@ -79,6 +88,9 @@
 4. AI 结果不是终点，而是中间资产  
    EFSM 只是中间表示，后面还要继续进入 `seed -> PDU -> pcap -> replay` 的工程链路。
 
+5. 逻辑漏洞判断不直接交给 AI  
+   漏洞候选必须经过 reference model、规则不变量和执行轨迹差异来判定，避免把“模型觉得可疑”直接当成工程结论。
+
 ### 2.3 顶层架构
 
 下面是本项目的顶层设计。它体现的是“AI 辅助 3GPP 协议安全研究与测试”的完整主线，而不是单个脚本的执行顺序：
@@ -87,11 +99,11 @@
 +----------------------------------------------------------------------------------+
 |                       3GPP Protocol Lab 顶层架构                                 |
 +----------------------------------------------------------------------------------+
-| 目标：把 3GPP 规范文本转成可验证、可编码、可回放、可接目标系统的安全测试资产      |
+| 目标：利用 AI 把 3GPP 规范转成可执行模型，并进一步用于协议状态机逻辑漏洞挖掘      |
 +----------------------------------------------------------------------------------+
 
-  [A] 规范输入层
-      3GPP 文档 / 本地归档 / bootstrap fixture
+  [A] 规范与知识输入层
+      3GPP 文档 / 本地归档 / bootstrap fixture / 人工安全规则
                            |
                            v
   [B] 语料工程层
@@ -99,24 +111,32 @@
                            |
                            v
   [C] AI 语义提取层
-      LLM 读取切片 -> 按 schema 输出 EFSM / 结构化过程语义
+      LLM 读取切片 -> 按 schema 输出 EFSM / 状态 / 变量 / 定时器 / 动作
                            |
                            v
-  [D] 确定性验证与约束层
+  [D] 规范化与确定性约束层
       schema 校验 -> 覆盖率检查 -> ASN.1 提取/编译 -> roundtrip 验证
                            |
                            v
-  [E] 测试资产生成层
-      EFSM -> seed -> PDU -> pcap -> runtime manifest -> replay script
+  [E] 属性与 Oracle 层
+      协议不变量 / 禁止事件 / 合法终态条件 / reference vs candidate 判定
                            |
                            v
-  [F] 目标执行层
-      离线 replay / OAI compose override / 后续在线注入与安全测试
+  [F] 有状态测试生成层
+      nominal 序列 -> duplicate / reorder / drop / timeout / cross-procedure swap
+                           |
+                           v
+  [G] 目标执行层
+      reference model / permissive candidate / runtime replay / 后续 OAI 接入
+                           |
+                           v
+  [H] 观测与归因层
+      trace / state divergence / negative acceptance / invariant violation / triage
 ```
 
 ### 2.4 分层展开
 
-为了更贴近工程实现，下面把上面的 6 层再展开成“谁负责什么”的视图。
+为了更贴近工程实现，下面把上面的 8 层再展开成“谁负责什么”的视图。
 
 #### 2.4.1 规范输入层 + 语料工程层
 
@@ -167,7 +187,36 @@
         +--> outputs/asn1/validation.json
 ```
 
-#### 2.4.3 测试资产生成层 + 目标执行层
+#### 2.4.3 属性与 Oracle 层 + 有状态测试生成层
+
+```text
+[已验证的 EFSM + 人工逻辑规则]
+        |
+        v
+[属性与 Oracle]
+  constraints/logic_rules.yaml
+  scripts/logic_fuzz.py
+        |
+        +--> reference model
+        +--> candidate model
+        +--> invariants / forbidden events / final-state guards
+        |
+        v
+[有状态测试生成]
+  nominal sequence
+  duplicate_last_step
+  move_last_to_front
+  drop_last_step
+  insert_timeout_before_last
+  cross_procedure_response_swap
+        |
+        +--> outputs/logic/cases.json
+        +--> outputs/logic/traces/*.json
+        +--> outputs/logic/findings.json
+        +--> outputs/logic/summary.json
+```
+
+#### 2.4.4 测试资产生成层 + 目标执行层
 
 ```text
 [已验证的 EFSM + ASN.1]
@@ -205,8 +254,10 @@
   - 串起 bootstrap 全链路。
 - `scripts/run_real_pipeline.py`
   - 串起真实文档导入、ASN.1 提取/验证、LLM EFSM 提取、runtime 生成。
+- `scripts/run_logic_campaign.py`
+  - 串起状态机逻辑 fuzz、oracle 判定和发现汇总。
 - `Makefile`
-  - 提供 `all / real / test / venv` 等快捷目标。
+  - 提供 `all / real / logic / test / venv` 等快捷目标。
 
 ## 3. 当前已实现的功能或状态
 
@@ -234,6 +285,15 @@
 - 使用 `asn1tools` 编译并完成 UPER roundtrip 验证。
 - 生成 runtime seed、PDU、pcap、compose override 和 replay 脚本。
 - 运行时完全自包含，不依赖外部旧项目。
+
+#### Logic 流水线
+
+- 基于真实 EFSM 构建可执行 reference 状态机。
+- 引入 `logic_rules.yaml` 定义不变量、禁止事件、终态守卫和扰动类型。
+- 自动生成 nominal 与负向变体序列。
+- 同时执行 reference target 与 candidate target。
+- 自动判定 `negative_acceptance / state_divergence / unexpected_rejection / invariant_violation`。
+- 为每个测试用例落盘完整执行轨迹，便于后续最小化复现和 triage。
 
 ### 3.2 当前状态指标
 
@@ -264,14 +324,25 @@
     - `compose_check.pass = true`
     - `udp_injector.pass = true`
 
+- 逻辑漏洞挖掘闭环
+  - `outputs/logic/summary.json` 显示：
+    - `case_count = 14`
+    - `finding_count = 25`
+    - `cases_with_findings = 10`
+    - `negative_acceptance = 9`
+    - `state_divergence = 7`
+    - `unexpected_rejection = 2`
+    - `invariant_violation = 7`
+
 - 测试
-  - `tests/test_pipeline.py` 当前覆盖 bootstrap 主路径的 5 个测试点。
+  - 当前 `python3 -m unittest discover -s tests` 为 `8` 个测试点全通过。
 
 ### 3.3 当前边界和未完成项
 
 - 真实流水线目前只覆盖 3 个 procedure，不是全量 `38.331`。
 - 真实 EFSM 提取依赖本机已登录的 `codex` CLI。
 - 当前 runtime 以离线 replay / 合成 pcap 为主，尚未做在线 OAI RFSIM 注入闭环。
+- 当前 logic 闭环中的 `candidate target` 还是故意放宽约束的本地模拟目标，用于验证 oracle 和状态机差异判定链路；尚未接入真实协议栈 procedure adapter。
 - 当前形式化层仍以“模型导出 + 图检查”为主，尚未接 `SPIN/NuSMV` 实际求解。
 - `vendor/3gpp/38331-h60.zip` 是本地输入文件，默认忽略，不随仓库发布。
 
@@ -315,7 +386,21 @@ cd 3gpp-protocol-lab
 .venv/bin/python scripts/run_real_pipeline.py
 ```
 
-### 4.4 运行测试
+### 4.4 运行状态机逻辑漏洞挖掘 campaign
+
+```bash
+cd 3gpp-protocol-lab
+python3 scripts/run_logic_campaign.py
+```
+
+或：
+
+```bash
+cd 3gpp-protocol-lab
+make logic
+```
+
+### 4.5 运行测试
 
 ```bash
 cd 3gpp-protocol-lab
@@ -326,16 +411,18 @@ python3 -m unittest discover -s tests
 
 说明：
 
-- 下列清单覆盖当前仓库已纳入版本控制的全部叶子文件。
+- 下列清单覆盖当前工程中的代码文件与主要输出产物。
 - `.git/`、`.venv/`、`__pycache__/` 属于 Git 或本地环境/缓存目录，不在正文中逐项展开。
+- `outputs/logic/*`、`outputs/runtime/*` 这类目录中的内容需要先跑对应流水线后才会生成。
 - 最后一节补充了项目约定的本地忽略文件。
 
 ```text
 3gpp-protocol-lab/                                              # 项目根目录
 ├── .gitignore                                                  # Git 忽略规则，排除本地环境、缓存与原始 zip
-├── Makefile                                                    # 常用命令入口，如 venv / real / test
+├── Makefile                                                    # 常用命令入口，如 venv / real / logic / test
 ├── README.md                                                   # 项目总说明文档
 ├── constraints/                                                # 约束定义目录
+│   ├── logic_rules.yaml                                        # 状态机逻辑规则、不变量与扰动定义
 │   ├── messages.yaml                                           # 消息字段默认值、边界值与 seed 生成约束
 │   └── properties.yaml                                         # bootstrap 属性检查规则
 ├── corpus/                                                     # 语料与切片目录
@@ -383,6 +470,25 @@ python3 -m unittest discover -s tests
 │   │       └── 5.3.5.11-full-configuration-procedure.pml       # `full configuration` Promela 模型
 │   ├── graph/                                                  # 图谱与关系存储目录
 │   │   └── 3gpp_lab.sqlite                                     # SQLite 图谱数据库
+│   ├── logic/                                                  # 状态机逻辑 fuzz 与 oracle 输出目录
+│   │   ├── cases.json                                          # 全部 logic 测试用例定义
+│   │   ├── findings.json                                       # 所有逻辑漏洞候选与差异发现
+│   │   ├── summary.json                                        # logic campaign 汇总统计
+│   │   └── traces/                                             # 每个 logic 用例的执行轨迹
+│   │       ├── 5.3.13-resume_nominal-append_last_step.json     # resume 追加响应后的执行轨迹
+│   │       ├── 5.3.13-resume_nominal-cross_procedure_response_swap.json # resume/setup 过程混淆轨迹
+│   │       ├── 5.3.13-resume_nominal-drop_last_step.json       # resume 缺步扰动轨迹
+│   │       ├── 5.3.13-resume_nominal-duplicate_last_step.json  # resume 重复消息扰动轨迹
+│   │       ├── 5.3.13-resume_nominal-insert_timeout_before_last.json # resume 超时插入扰动轨迹
+│   │       ├── 5.3.13-resume_nominal-move_last_to_front.json   # resume 乱序扰动轨迹
+│   │       ├── 5.3.13-resume_nominal-nominal.json              # resume 正常路径轨迹
+│   │       ├── 5.3.3-setup_nominal-append_last_step.json       # setup 追加响应后的执行轨迹
+│   │       ├── 5.3.3-setup_nominal-cross_procedure_response_swap.json # setup/resume 过程混淆轨迹
+│   │       ├── 5.3.3-setup_nominal-drop_last_step.json         # setup 缺步扰动轨迹
+│   │       ├── 5.3.3-setup_nominal-duplicate_last_step.json    # setup 重复消息扰动轨迹
+│   │       ├── 5.3.3-setup_nominal-insert_timeout_before_last.json # setup 超时插入扰动轨迹
+│   │       ├── 5.3.3-setup_nominal-move_last_to_front.json     # setup 乱序扰动轨迹
+│   │       └── 5.3.3-setup_nominal-nominal.json                # setup 正常路径轨迹
 │   ├── mermaid/                                                # Mermaid 状态图目录
 │   │   ├── 5.3.13-rrc-connection-resume.mmd                    # `RRC resume` Mermaid 图
 │   │   ├── 5.3.3-rrc-connection-establishment.mmd              # `RRC establishment` Mermaid 图
@@ -447,8 +553,10 @@ python3 -m unittest discover -s tests
 │   ├── generate_paths.py                                       # 生成路径规划结果
 │   ├── generate_seeds.py                                       # 生成 bootstrap seeds
 │   ├── ingest_real_spec.py                                     # 导入真实规范并切片
+│   ├── logic_fuzz.py                                           # 状态机 logic fuzz、reference/candidate 执行与 oracle 判定
 │   ├── render_mermaid.py                                       # 导出 Mermaid 图
 │   ├── retrieve.py                                             # 执行本地检索
+│   ├── run_logic_campaign.py                                   # logic campaign 总入口
 │   ├── run_pipeline.py                                         # bootstrap 总入口
 │   ├── run_real_pipeline.py                                    # real 总入口
 │   ├── send_runtime_pdu.py                                     # 发送 runtime PDU 的 UDP 注入脚本
@@ -466,17 +574,18 @@ python3 -m unittest discover -s tests
 │       ├── nrue.uicc.conf                                      # OAI UE UICC 配置
 │       └── oai_db.sql                                          # OAI 初始化数据库脚本
 └── tests/                                                      # 测试目录
+    ├── test_logic_campaign.py                                  # logic fuzz、oracle 和发现汇总测试
     └── test_pipeline.py                                        # bootstrap 烟测与回归测试
 ```
 
 ### 5.1 重要目录职责说明
 
 - `constraints/`
-  - 存放 seed 字段约束和属性检查规则。
+  - 存放 seed 字段约束、属性检查规则和状态机逻辑规则。
 - `corpus/`
   - 存放 bootstrap 语料、真实语料和 procedure 切片结果。
 - `outputs/`
-  - 存放所有当前已生成的中间产物和最终产物。
+  - 存放所有当前已生成的中间产物、runtime 资产和 logic campaign 结果。
 - `schemas/`
   - 定义 EFSM 的通用 schema 和 Codex 输出 schema。
 - `scripts/`
@@ -484,7 +593,7 @@ python3 -m unittest discover -s tests
 - `targets/oai/`
   - 存放独立 OAI 目标接入配置。
 - `tests/`
-  - 存放 bootstrap 烟测。
+  - 存放 bootstrap 和 logic campaign 的烟测与回归测试。
 
 ### 5.2 本地忽略文件和目录
 
@@ -506,6 +615,8 @@ python3 -m unittest discover -s tests
 - `outputs/reports_real/real_ingest.json`
 - `outputs/reports_real/*.json`
 - `outputs/asn1/validation.json`
+- `outputs/logic/summary.json`
+- `outputs/logic/findings.json`
 - `outputs/runtime/manifest.json`
 - `targets/oai/README.md`
 
@@ -515,17 +626,21 @@ python3 -m unittest discover -s tests
 - `scripts/ingest_real_spec.py`
 - `scripts/extract_efsm_llm.py`
 - `scripts/validate_asn1.py`
+- `scripts/logic_fuzz.py`
+- `scripts/run_logic_campaign.py`
 - `scripts/build_runtime_bundle.py`
 
 ## 7. 后续建议
 
 下一步如果继续往工程化推进，优先级建议如下：
 
-1. 把 real procedure 从当前 3 个扩到更多 `5.3.x` 子过程。
-2. 接入真实 model checker，而不是只保留 Promela/NuSMV 导出。
-3. 把 runtime 从离线 replay 推到在线 OAI RFSIM 注入。
-4. 对 EFSM 提取增加人工 gold set 和回归评估。
-5. 把本地输入 `38331-h60.zip` 的准备流程写成明确脚本或下载说明。
+1. 把 logic campaign 的 `candidate target` 从本地 permissive 模型替换成真实协议处理器或 OAI procedure adapter。
+2. 为 `RRCSetup / RRCResume / Reestablishment` 增加更多人工不变量和最小化复现策略。
+3. 把 real procedure 从当前 3 个扩到更多 `5.3.x` 子过程。
+4. 接入真实 model checker，而不是只保留 Promela/NuSMV 导出。
+5. 把 runtime 从离线 replay 推到在线 OAI RFSIM 注入。
+6. 对 EFSM 提取增加人工 gold set 和回归评估。
+7. 把本地输入 `38331-h60.zip` 的准备流程写成明确脚本或下载说明。
 
 ## 8. 附录：术语
 
@@ -547,6 +662,12 @@ python3 -m unittest discover -s tests
 - `EFSM`
   - `Extended Finite State Machine`，扩展有限状态机。相比普通状态机，多了变量、条件守卫、定时器和动作。
 
+- `Oracle`
+  - 指测试中的判定规则集合，用来判断一次消息序列执行后是否出现非法接受、状态偏差或安全不变量违反。
+
+- `Invariant`
+  - 指协议在任何合法执行中都应满足的性质，例如“未收到对应响应前不应进入某个终态”。
+
 - `Schema`
   - 这里主要指 JSON Schema，用来约束模型输出结构，防止它随意返回不符合格式的内容。
 
@@ -555,6 +676,9 @@ python3 -m unittest discover -s tests
 
 - `Mutation`
   - 指对 seed 做变异，例如生成 nominal、boundary 之类不同输入，以覆盖不同协议分支。
+
+- `Stateful Fuzz`
+  - 指以消息序列而不是单条消息为单位进行测试，并显式考虑状态、上下文和定时器扰动。
 
 - `Runtime`
   - 指可实际执行、可被回放或注入目标系统的运行期产物集合，如 seed、PDU、pcap、replay 脚本等。
@@ -576,6 +700,15 @@ python3 -m unittest discover -s tests
 
 - `Roundtrip`
   - 指“编码一次，再解码回来”的往返验证，用来确认 ASN.1 定义和编码逻辑至少在样本层面是自洽的。
+
+- `Negative Acceptance`
+  - 指目标错误地接受了一条在当前状态下本应拒绝的消息或序列，这是协议逻辑漏洞的重要信号。
+
+- `State Divergence`
+  - 指 candidate target 与 reference model 在同一步输入后到达了不同状态，说明实现逻辑与参考协议语义出现偏差。
+
+- `Triage`
+  - 指对发现结果做归因、去重、排序和复现整理的过程，用来把 fuzz 输出转成可分析的漏洞候选。
 
 - `Codex CLI`
   - 本项目当前用于大模型提取的命令行入口，通过 schema 约束把规范文本转成结构化 EFSM JSON。

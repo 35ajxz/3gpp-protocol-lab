@@ -1,13 +1,16 @@
 PYTHON := python3
 VENV_PYTHON := .venv/bin/python
 
-.PHONY: all real venv slice extract validate retrieve graph formal properties paths mermaid seeds test clean
+.PHONY: all real logic venv slice extract validate retrieve graph formal properties paths mermaid seeds test clean
 
 all:
 	$(PYTHON) scripts/run_pipeline.py
 
 real:
 	$(VENV_PYTHON) scripts/run_real_pipeline.py
+
+logic:
+	$(PYTHON) scripts/run_logic_campaign.py
 
 venv:
 	python3 -m venv .venv
