@@ -45,82 +45,161 @@
 
 ### 2.1 技术选型
 
-- 语言与脚本编排：`Python 3`
-  - 用于绝大多数数据处理、切片、验证、runtime 生成逻辑。
-- LLM 提取：`Codex CLI`
-  - 通过 `codex exec --output-schema` 输出 schema 约束的 EFSM JSON。
+- 编排与工程骨架：`Python 3`
+  - 用于组织整条流水线，包括导入、切片、验证、seed 生成、runtime 打包和测试。
+- AI 语义提取：`Codex CLI` + `JSON Schema`
+  - 用于把 3GPP procedure 文本提取成结构化 EFSM。
+  - 通过 `--output-schema` 把模型输出限制在工程可消费的 JSON 结构内。
+- 规则与约束：`YAML` + Python 校验脚本
+  - 用于补足 LLM 不擅长的确定性检查，例如字段约束、路径完整性、消息/定时器/变量覆盖。
 - ASN.1 编译与编码验证：`asn1tools`
-  - 用于编译 `NR-RRC-Definitions` 并做 `UPER` 编解码 roundtrip。
-- pcap 生成：`Scapy`
-  - 用于把 runtime PDU 封装成项目内合成的 UDP/pcap 样本。
-- 图谱存储：`SQLite`
-  - 用于 bootstrap 流水线的本地结构化查询与关系整理。
-- 形式化导出：`Promela / NuSMV` 文本导出
-  - 当前先导出模型文件和图属性检查结果，尚未接外部 model checker 实跑。
-- OAI 接入：项目内 `targets/oai/*`
-  - 当前以 compose override 和离线 replay 为主，不强绑外部工程。
+  - 用于编译 `NR-RRC-Definitions`，并对 `UPER` 编解码进行 roundtrip 验证。
+- 检索与关系存储：`SQLite`
+  - 用于 bootstrap 路线中的本地检索和结构化关系组织。
+- 形式化输出：`Promela / NuSMV`
+  - 当前先生成形式化模型文本，为后续接入外部 model checker 预留接口。
+- runtime 产物生成：`Scapy` + 本地 UDP 注入脚本
+  - 用于把 EFSM/ASN.1 结果转换成 `.uper.bin`、`.pcap` 和可执行 replay 入口。
+- 目标系统接入：项目内 `targets/oai/*`
+  - 用于承接未来的 OAI/RFSIM 在线注入和更真实的协议测试。
 
-### 2.2 整体架构
+### 2.2 AI 在本项目中的位置
 
-下面是当前工程的主干架构，使用 ASCII 文本表示：
+这个项目不是“把整本 3GPP 文档直接扔给模型，然后相信它的回答”，而是把 AI 放在一个受约束的位置上：
+
+1. AI 负责语义理解  
+   主要用于把 procedure 文本转换成 EFSM 草稿，尤其处理状态、定时器、条件分支、动作等语义结构。
+
+2. 工程脚本负责确定性执行  
+   切片、约束装配、ASN.1 编译、PDU 生成、pcap 封装、runtime 打包都由本地脚本完成，不依赖模型自由发挥。
+
+3. Schema 和验证层负责约束 AI  
+   模型输出必须先满足 schema，再通过消息/定时器/变量/步骤顺序等校验，才能进入后续阶段。
+
+4. AI 结果不是终点，而是中间资产  
+   EFSM 只是中间表示，后面还要继续进入 `seed -> PDU -> pcap -> replay` 的工程链路。
+
+### 2.3 顶层架构
+
+下面是本项目的顶层设计。它体现的是“AI 辅助 3GPP 协议安全研究与测试”的完整主线，而不是单个脚本的执行顺序：
 
 ```text
-+--------------------------------------------------------------+
-|                    3GPP Protocol Lab                         |
-+--------------------------------------------------------------+
++----------------------------------------------------------------------------------+
+|                       3GPP Protocol Lab 顶层架构                                 |
++----------------------------------------------------------------------------------+
+| 目标：把 3GPP 规范文本转成可验证、可编码、可回放、可接目标系统的安全测试资产      |
++----------------------------------------------------------------------------------+
 
-  Bootstrap 路线
-  ---------------
-  corpus/raw/*.md
-         |
-         v
-  scripts/slice_procedures.py
-         |
-         v
-  corpus/slices/*.md
-         |
-         v
-  scripts/extract_efsm.py
-         |
-         v
-  outputs/efsm/*.json
-         |
-         +--> scripts/validate_efsm.py ------> outputs/reports/*.json
-         +--> scripts/retrieve.py -----------> outputs/retrieval/*.json
-         +--> scripts/build_graph.py --------> outputs/graph/3gpp_lab.sqlite
-         +--> scripts/export_formal.py ------> outputs/formal/promela/*.pml
-         |                                    outputs/formal/nusmv/*.smv
-         +--> scripts/check_properties.py ---> outputs/properties/*.json
-         +--> scripts/generate_paths.py -----> outputs/paths/*.json
-         +--> scripts/render_mermaid.py -----> outputs/mermaid/*.mmd
-         +--> scripts/generate_seeds.py -----> outputs/seeds/*.json
-
-  Real 路线
-  ---------
-  vendor/3gpp/38331-h60.zip   (本地输入，默认不纳入版本控制)
-         |
-         v
-  scripts/ingest_real_spec.py
-         |
-         +--> corpus/real/raw/ts-38.331-v17.6.0.md
-         +--> corpus/real/slices/*.md
-         +--> outputs/reports_real/real_ingest.json
-         |
-         +--> scripts/extract_asn1.py --------> outputs/asn1/NR-RRC-Definitions.asn1
-         |    scripts/validate_asn1.py -------> outputs/asn1/validation.json
-         |
-         +--> scripts/extract_efsm_llm.py ----> outputs/efsm_real/*.json
-         |    scripts/validate_efsm_real.py --> outputs/reports_real/*.json
-         |
-         +--> scripts/build_runtime_bundle.py -> outputs/runtime/seeds/*.json
-                                                outputs/runtime/pdus/*.uper.bin
-                                                outputs/runtime/pcaps/*.pcap
-                                                outputs/runtime/oai/docker-compose.runtime.yaml
-                                                outputs/runtime/replay_runtime.sh
-                                                outputs/runtime/manifest.json
+  [A] 规范输入层
+      3GPP 文档 / 本地归档 / bootstrap fixture
+                           |
+                           v
+  [B] 语料工程层
+      导入 -> 清洗 -> Markdown 化 -> procedure 切片 -> 检索索引
+                           |
+                           v
+  [C] AI 语义提取层
+      LLM 读取切片 -> 按 schema 输出 EFSM / 结构化过程语义
+                           |
+                           v
+  [D] 确定性验证与约束层
+      schema 校验 -> 覆盖率检查 -> ASN.1 提取/编译 -> roundtrip 验证
+                           |
+                           v
+  [E] 测试资产生成层
+      EFSM -> seed -> PDU -> pcap -> runtime manifest -> replay script
+                           |
+                           v
+  [F] 目标执行层
+      离线 replay / OAI compose override / 后续在线注入与安全测试
 ```
 
-### 2.3 核心执行入口
+### 2.4 分层展开
+
+为了更贴近工程实现，下面把上面的 6 层再展开成“谁负责什么”的视图。
+
+#### 2.4.1 规范输入层 + 语料工程层
+
+```text
+[规范输入]
+  bootstrap fixture
+  real 3GPP 归档文件
+        |
+        v
+[语料工程]
+  scripts/docx_3gpp.py
+  scripts/ingest_real_spec.py
+  scripts/slice_procedures.py
+  scripts/retrieve.py
+        |
+        +--> corpus/raw/*.md
+        +--> corpus/slices/*.md
+        +--> corpus/real/raw/*.md
+        +--> corpus/real/slices/*.md
+        +--> outputs/retrieval/last_query.json
+```
+
+#### 2.4.2 AI 语义提取层 + 确定性验证层
+
+```text
+[procedure slices]
+        |
+        v
+[AI 语义提取]
+  scripts/extract_efsm.py        # bootstrap 的确定性提取
+  scripts/extract_efsm_llm.py    # real 的 LLM 提取
+        |
+        +--> outputs/efsm/*.json
+        +--> outputs/efsm_real/*.json
+        |
+        v
+[验证与约束]
+  scripts/validate_efsm.py
+  scripts/validate_efsm_real.py
+  scripts/extract_asn1.py
+  scripts/validate_asn1.py
+  schemas/efsm.schema.json
+  schemas/efsm.codex.schema.json
+        |
+        +--> outputs/reports/*.json
+        +--> outputs/reports_real/*.json
+        +--> outputs/asn1/*.asn1
+        +--> outputs/asn1/validation.json
+```
+
+#### 2.4.3 测试资产生成层 + 目标执行层
+
+```text
+[已验证的 EFSM + ASN.1]
+        |
+        v
+[测试资产生成]
+  scripts/generate_seeds.py
+  scripts/build_graph.py
+  scripts/export_formal.py
+  scripts/check_properties.py
+  scripts/generate_paths.py
+  scripts/render_mermaid.py
+  scripts/build_runtime_bundle.py
+        |
+        +--> outputs/seeds/*.json
+        +--> outputs/graph/3gpp_lab.sqlite
+        +--> outputs/formal/promela/*.pml
+        +--> outputs/formal/nusmv/*.smv
+        +--> outputs/properties/*.json
+        +--> outputs/paths/*.json
+        +--> outputs/mermaid/*.mmd
+        +--> outputs/runtime/*
+        |
+        v
+[目标执行]
+  scripts/send_runtime_pdu.py
+  outputs/runtime/replay_runtime.sh
+  targets/oai/docker-compose.yaml
+  outputs/runtime/oai/docker-compose.runtime.yaml
+```
+
+### 2.5 核心执行入口
 
 - `scripts/run_pipeline.py`
   - 串起 bootstrap 全链路。
