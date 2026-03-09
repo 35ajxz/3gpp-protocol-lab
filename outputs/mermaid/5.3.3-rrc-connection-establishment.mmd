@@ -1,4 +1,0 @@
-stateDiagram-v2
-    RRC_IDLE --> RRC_SETUP_REQUESTED: upper_layers_request / start_timer(T300), send_message(RRCSetupRequest,ue_Identity,establishmentCause)
-    RRC_SETUP_REQUESTED --> RRC_CONNECTED: receive(RRCSetup) [fullConfig_present] / stop_timer(T300), reset_as_context, deliver_dedicatedNAS_if_present
-    RRC_SETUP_REQUESTED --> RRC_IDLE: timer_expiry(T300) / increment_setup_attempt, discard_pending_setup

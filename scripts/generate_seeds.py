@@ -1,8 +1,14 @@
 from __future__ import annotations
 
 import re
+from pathlib import Path
 
-from common import CONSTRAINTS_DIR, SEED_OUTPUT_DIR, ensure_dirs, list_efsm_files, load_yaml, read_json, write_json
+from common import CONSTRAINTS_DIR, load_yaml, read_json, write_json
+
+
+ROOT = Path(__file__).resolve().parents[1]
+REAL_EFSM_DIR = ROOT / "outputs" / "efsm_real"
+SEED_PREVIEW_DIR = ROOT / "outputs" / "runtime" / "seeds"
 
 
 def extract_message_name(event: str, actions: list[str]) -> str | None:
@@ -96,15 +102,15 @@ def generate_seeds_for_file(efsm_path, constraints):
 
 
 def main() -> None:
-    ensure_dirs()
+    SEED_PREVIEW_DIR.mkdir(parents=True, exist_ok=True)
     constraints = load_yaml(CONSTRAINTS_DIR / "messages.yaml")
     count = 0
-    for efsm_path in list_efsm_files():
+    for efsm_path in sorted(REAL_EFSM_DIR.glob("*.json")):
         bundle = generate_seeds_for_file(efsm_path, constraints)
-        output_path = SEED_OUTPUT_DIR / f"{bundle['procedure']['slug']}.json"
+        output_path = SEED_PREVIEW_DIR / f"{bundle['procedure']['slug']}.json"
         write_json(output_path, bundle)
         count += 1
-    print(f"generated {count} seed bundles into {SEED_OUTPUT_DIR}")
+    print(f"generated {count} message seed bundles into {SEED_PREVIEW_DIR}")
 
 
 if __name__ == "__main__":
