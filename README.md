@@ -447,3 +447,74 @@ python3 -m unittest discover -s tests
 3. 把 runtime 从离线 replay 推到在线 OAI RFSIM 注入。
 4. 对 EFSM 提取增加人工 gold set 和回归评估。
 5. 把本地输入 `38331-h60.zip` 的准备流程写成明确脚本或下载说明。
+
+## 8. 附录：术语
+
+- `Bootstrap`
+  - 指本项目里的轻依赖最小闭环路线，用于先把切片、提取、验证、seed 生成等主流程跑通。
+
+- `Real`
+  - 指接入真实 `38.331` 文档、真实 ASN.1 编译和真实 runtime 产物生成的那条路线。
+
+- `Procedure`
+  - 指 3GPP 规范中的一个具体协议过程，例如 `RRC connection resume`、`RRC connection establishment`。
+
+- `Slice`
+  - 指从原始规范中按 procedure 粒度裁切出来的一段文本，供后续提取、验证和检索使用。
+
+- `Pipeline`
+  - 指一条从输入到输出的串行处理流程，例如 `导入 -> 切片 -> 提取 -> 校验 -> 生成产物`。
+
+- `EFSM`
+  - `Extended Finite State Machine`，扩展有限状态机。相比普通状态机，多了变量、条件守卫、定时器和动作。
+
+- `Schema`
+  - 这里主要指 JSON Schema，用来约束模型输出结构，防止它随意返回不符合格式的内容。
+
+- `Seed`
+  - 用于后续变异、回放或测试的基础输入样本。在本项目里通常是从 EFSM 和约束推导出的消息样本。
+
+- `Mutation`
+  - 指对 seed 做变异，例如生成 nominal、boundary 之类不同输入，以覆盖不同协议分支。
+
+- `Runtime`
+  - 指可实际执行、可被回放或注入目标系统的运行期产物集合，如 seed、PDU、pcap、replay 脚本等。
+
+- `Replay`
+  - 指把之前生成的消息或流量样本重新发送给目标系统，用于复现、测试或注入。
+
+- `PDU`
+  - `Protocol Data Unit`，协议数据单元。这里通常指经过 ASN.1 编码后的二进制协议消息。
+
+- `pcap`
+  - 数据包捕获文件格式。项目中用它保存合成后的网络流量样本，便于离线分析和回放。
+
+- `ASN.1`
+  - `Abstract Syntax Notation One`，一种描述协议消息结构的标准表示法。RRC 消息定义大量依赖它。
+
+- `UPER`
+  - `Unaligned Packed Encoding Rules`，ASN.1 的一种编码规则。本项目当前用它生成 RRC 相关二进制消息。
+
+- `Roundtrip`
+  - 指“编码一次，再解码回来”的往返验证，用来确认 ASN.1 定义和编码逻辑至少在样本层面是自洽的。
+
+- `Codex CLI`
+  - 本项目当前用于大模型提取的命令行入口，通过 schema 约束把规范文本转成结构化 EFSM JSON。
+
+- `Promela`
+  - 一种用于形式化建模的语言，通常与 `SPIN` 配合使用。本项目当前先导出文本模型。
+
+- `NuSMV`
+  - 一种模型检查工具及其输入语言。本项目当前先导出 `.smv` 文本模型，尚未进入完整求解流程。
+
+- `OAI`
+  - `OpenAirInterface`，开源移动通信协议栈/实验平台。本项目当前把它当作后续目标系统接入位点。
+
+- `Compose Override`
+  - 指额外叠加到基础 `docker-compose.yaml` 之上的覆盖配置，用来挂载 runtime 产物或改写运行参数。
+
+- `Graph`
+  - 本项目里主要指 procedure、状态、转移、引用关系的结构化关系图，目前以 SQLite 形式落地。
+
+- `Model Checker`
+  - 用于自动检查状态机模型是否满足某些性质的工具，例如是否存在死锁、不可达状态或非法转移。
