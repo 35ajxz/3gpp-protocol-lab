@@ -1,0 +1,28 @@
+procedures:
+  "5.3.3":
+    start_state: RRC_IDLE
+    allowed_terminal_states: [RRC_CONNECTED, RRC_IDLE]
+    assertions:
+      - kind: reachability
+        target_state: RRC_CONNECTED
+      - kind: event_target
+        event: timer_expiry(T300)
+        target_state: RRC_IDLE
+  "5.3.5.11":
+    start_state: RRC_CONFIGURATION_PENDING
+    allowed_terminal_states: [RRC_CONFIGURATION_APPLIED]
+    assertions:
+      - kind: reachability
+        target_state: RRC_CONFIGURATION_APPLIED
+  "5.3.13":
+    start_state: RRC_INACTIVE
+    allowed_terminal_states: [RRC_CONNECTED, RRC_IDLE]
+    assertions:
+      - kind: reachability
+        target_state: RRC_CONNECTED
+      - kind: event_target
+        event: timer_expiry(T319)
+        target_state: RRC_IDLE
+      - kind: event_target
+        event: receive(RRCReject)
+        target_state: RRC_IDLE

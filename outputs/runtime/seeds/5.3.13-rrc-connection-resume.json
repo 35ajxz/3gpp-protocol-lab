@@ -1,0 +1,85 @@
+{
+  "procedure": {
+    "id": "5.3.13",
+    "title": "RRC connection resume",
+    "slug": "5.3.13-rrc-connection-resume"
+  },
+  "seeds": [
+    {
+      "id": "5.3.13-step-2-nominal",
+      "procedure_id": "5.3.13",
+      "transition_step": 2,
+      "message": "L2_U2N_remote_message_via_SL_RLC0_or_SL_RLC1",
+      "mutation_class": "nominal",
+      "expected_target_state": "RRC_INACTIVE",
+      "guard": null,
+      "payload": {}
+    },
+    {
+      "id": "5.3.13-step-3-nominal",
+      "procedure_id": "5.3.13",
+      "transition_step": 3,
+      "message": "RRCResumeRequest",
+      "mutation_class": "nominal",
+      "expected_target_state": "RRC_INACTIVE",
+      "guard": null,
+      "payload": {
+        "resumeIdentity": 101
+      }
+    },
+    {
+      "id": "5.3.13-step-3-boundary",
+      "procedure_id": "5.3.13",
+      "transition_step": 3,
+      "message": "RRCResumeRequest",
+      "mutation_class": "boundary",
+      "expected_target_state": "RRC_INACTIVE",
+      "guard": null,
+      "payload": {
+        "resumeIdentity": 1099511627775
+      }
+    },
+    {
+      "id": "5.3.13-step-4-nominal",
+      "procedure_id": "5.3.13",
+      "transition_step": 4,
+      "message": "RRCResume",
+      "mutation_class": "nominal",
+      "expected_target_state": "RRC_CONNECTED",
+      "guard": null,
+      "payload": {
+        "fullConfig": false,
+        "masterCellGroup": "<mcg>",
+        "radioBearerConfig": "<rbcfg>",
+        "skCounter": 10,
+        "suspendConfig": "<suspend>"
+      }
+    },
+    {
+      "id": "5.3.13-step-4-boundary",
+      "procedure_id": "5.3.13",
+      "transition_step": 4,
+      "message": "RRCResume",
+      "mutation_class": "boundary",
+      "expected_target_state": "RRC_CONNECTED",
+      "guard": null,
+      "payload": {
+        "fullConfig": true,
+        "masterCellGroup": "<edge>",
+        "radioBearerConfig": "<edge>",
+        "skCounter": 65535,
+        "suspendConfig": "<edge>"
+      }
+    },
+    {
+      "id": "5.3.13-step-6-nominal",
+      "procedure_id": "5.3.13",
+      "transition_step": 6,
+      "message": "NotificationMessageSidelink",
+      "mutation_class": "nominal",
+      "expected_target_state": "PROCEDURE_ABORTED",
+      "guard": null,
+      "payload": {}
+    }
+  ]
+}

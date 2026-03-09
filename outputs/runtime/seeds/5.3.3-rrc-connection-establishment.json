@@ -1,0 +1,97 @@
+{
+  "procedure": {
+    "id": "5.3.3",
+    "title": "RRC connection establishment",
+    "slug": "5.3.3-rrc-connection-establishment"
+  },
+  "seeds": [
+    {
+      "id": "5.3.3-step-1-nominal",
+      "procedure_id": "5.3.3",
+      "transition_step": 1,
+      "message": "RRCSetupRequest",
+      "mutation_class": "nominal",
+      "expected_target_state": "RRC_SETUP_REQUESTED",
+      "guard": "essential system information is valid and up to date, or sidelink condition in 5.3.3.1a is met",
+      "payload": {
+        "ue_Identity": 77,
+        "establishmentCause": "mo_Signalling"
+      }
+    },
+    {
+      "id": "5.3.3-step-1-boundary",
+      "procedure_id": "5.3.3",
+      "transition_step": 1,
+      "message": "RRCSetupRequest",
+      "mutation_class": "boundary",
+      "expected_target_state": "RRC_SETUP_REQUESTED",
+      "guard": "essential system information is valid and up to date, or sidelink condition in 5.3.3.1a is met",
+      "payload": {
+        "ue_Identity": 549755813887,
+        "establishmentCause": "mo_Signalling"
+      }
+    },
+    {
+      "id": "5.3.3-step-4-nominal",
+      "procedure_id": "5.3.3",
+      "transition_step": 4,
+      "message": "RRCSetup",
+      "mutation_class": "nominal",
+      "expected_target_state": "RRC_CONNECTED",
+      "guard": "response to RRCSetupRequest",
+      "payload": {
+        "fullConfig": true,
+        "dedicatedNAS": "<nas>"
+      }
+    },
+    {
+      "id": "5.3.3-step-4-boundary",
+      "procedure_id": "5.3.3",
+      "transition_step": 4,
+      "message": "RRCSetup",
+      "mutation_class": "boundary",
+      "expected_target_state": "RRC_CONNECTED",
+      "guard": "response to RRCSetupRequest",
+      "payload": {
+        "fullConfig": true,
+        "dedicatedNAS": "<edge>"
+      }
+    },
+    {
+      "id": "5.3.3-step-5-nominal",
+      "procedure_id": "5.3.3",
+      "transition_step": 5,
+      "message": "RRCSetup",
+      "mutation_class": "nominal",
+      "expected_target_state": "RRC_CONNECTED",
+      "guard": "response to RRCResumeRequest, RRCResumeRequest1, or RRCReestablishmentRequest",
+      "payload": {
+        "fullConfig": true,
+        "dedicatedNAS": "<nas>"
+      }
+    },
+    {
+      "id": "5.3.3-step-5-boundary",
+      "procedure_id": "5.3.3",
+      "transition_step": 5,
+      "message": "RRCSetup",
+      "mutation_class": "boundary",
+      "expected_target_state": "RRC_CONNECTED",
+      "guard": "response to RRCResumeRequest, RRCResumeRequest1, or RRCReestablishmentRequest",
+      "payload": {
+        "fullConfig": true,
+        "dedicatedNAS": "<edge>"
+      }
+    },
+    {
+      "id": "5.3.3-step-6-nominal",
+      "procedure_id": "5.3.3",
+      "transition_step": 6,
+      "message": "RRCReject",
+      "mutation_class": "nominal",
+      "expected_target_state": "PROCEDURE_REJECTED",
+      "guard": "null",
+      "payload": {}
+    }
+  ]
+}

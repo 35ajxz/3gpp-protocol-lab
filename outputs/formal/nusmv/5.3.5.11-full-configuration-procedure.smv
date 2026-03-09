@@ -1,0 +1,9 @@
+-- Auto-generated bootstrap NuSMV for 5.3.5.11 Full configuration procedure
+MODULE main
+VAR state : {RRC_CONFIGURATION_APPLIED, RRC_CONFIGURATION_PENDING};
+ASSIGN
+  init(state) := RRC_CONFIGURATION_PENDING;
+  next(state) := case
+    state = RRC_CONFIGURATION_PENDING : RRC_CONFIGURATION_APPLIED;
+    TRUE : state;
+  esac;

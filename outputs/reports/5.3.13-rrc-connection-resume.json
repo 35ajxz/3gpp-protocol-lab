@@ -1,0 +1,31 @@
+{
+  "efsm_file": "5.3.13-rrc-connection-resume.json",
+  "structure_errors": [],
+  "bullet_alignment": {
+    "expected": 5,
+    "actual": 5,
+    "match": true
+  },
+  "terminology_coverage": {
+    "timers": {
+      "expected": 1,
+      "matched": 1,
+      "coverage": 1.0
+    },
+    "messages": {
+      "expected": 3,
+      "matched": 3,
+      "coverage": 1.0
+    },
+    "variables": {
+      "expected": 6,
+      "matched": 6,
+      "coverage": 1.0
+    }
+  },
+  "reference_closure": {
+    "unresolved_refs": [],
+    "match": true
+  },
+  "pass": true
+}

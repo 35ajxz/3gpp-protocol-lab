@@ -1,0 +1,131 @@
+{
+  "seed_files": [
+    "5.3.13-rrc-connection-resume.json",
+    "5.3.3-rrc-connection-establishment.json",
+    "5.3.5.11-full-configuration.json"
+  ],
+  "entry_count": 13,
+  "entries": [
+    {
+      "seed_id": "5.3.13-step-2-nominal",
+      "procedure_id": "5.3.13",
+      "message": "L2_U2N_remote_message_via_SL_RLC0_or_SL_RLC1",
+      "mutation_class": "nominal"
+    },
+    {
+      "seed_id": "5.3.13-step-3-nominal",
+      "procedure_id": "5.3.13",
+      "message": "RRCResumeRequest",
+      "mutation_class": "nominal",
+      "pdu_file": "5.3.13-step-3-nominal.uper.bin",
+      "encoded_hex": "000065aabb40",
+      "asn1_message": "RRCResumeRequest",
+      "pcap": {
+        "pcap": "5.3.13-step-3-nominal.pcap",
+        "udp_port": 4999,
+        "encoded_size": 6
+      }
+    },
+    {
+      "seed_id": "5.3.13-step-3-boundary",
+      "procedure_id": "5.3.13",
+      "message": "RRCResumeRequest",
+      "mutation_class": "boundary",
+      "pdu_file": "5.3.13-step-3-boundary.uper.bin",
+      "encoded_hex": "ffffffaabb40",
+      "asn1_message": "RRCResumeRequest",
+      "pcap": {
+        "pcap": "5.3.13-step-3-boundary.pcap",
+        "udp_port": 4999,
+        "encoded_size": 6
+      }
+    },
+    {
+      "seed_id": "5.3.13-step-4-nominal",
+      "procedure_id": "5.3.13",
+      "message": "RRCResume",
+      "mutation_class": "nominal"
+    },
+    {
+      "seed_id": "5.3.13-step-4-boundary",
+      "procedure_id": "5.3.13",
+      "message": "RRCResume",
+      "mutation_class": "boundary"
+    },
+    {
+      "seed_id": "5.3.13-step-6-nominal",
+      "procedure_id": "5.3.13",
+      "message": "NotificationMessageSidelink",
+      "mutation_class": "nominal"
+    },
+    {
+      "seed_id": "5.3.3-step-1-nominal",
+      "procedure_id": "5.3.3",
+      "message": "RRCSetupRequest",
+      "mutation_class": "nominal",
+      "pdu_file": "5.3.3-step-1-nominal.uper.bin",
+      "encoded_hex": "800000002630",
+      "asn1_message": "RRCSetupRequest",
+      "pcap": {
+        "pcap": "5.3.3-step-1-nominal.pcap",
+        "udp_port": 4999,
+        "encoded_size": 6
+      }
+    },
+    {
+      "seed_id": "5.3.3-step-1-boundary",
+      "procedure_id": "5.3.3",
+      "message": "RRCSetupRequest",
+      "mutation_class": "boundary",
+      "pdu_file": "5.3.3-step-1-boundary.uper.bin",
+      "encoded_hex": "bfffffffff30",
+      "asn1_message": "RRCSetupRequest",
+      "pcap": {
+        "pcap": "5.3.3-step-1-boundary.pcap",
+        "udp_port": 4999,
+        "encoded_size": 6
+      }
+    },
+    {
+      "seed_id": "5.3.3-step-4-nominal",
+      "procedure_id": "5.3.3",
+      "message": "RRCSetup",
+      "mutation_class": "nominal"
+    },
+    {
+      "seed_id": "5.3.3-step-4-boundary",
+      "procedure_id": "5.3.3",
+      "message": "RRCSetup",
+      "mutation_class": "boundary"
+    },
+    {
+      "seed_id": "5.3.3-step-5-nominal",
+      "procedure_id": "5.3.3",
+      "message": "RRCSetup",
+      "mutation_class": "nominal"
+    },
+    {
+      "seed_id": "5.3.3-step-5-boundary",
+      "procedure_id": "5.3.3",
+      "message": "RRCSetup",
+      "mutation_class": "boundary"
+    },
+    {
+      "seed_id": "5.3.3-step-6-nominal",
+      "procedure_id": "5.3.3",
+      "message": "RRCReject",
+      "mutation_class": "nominal"
+    }
+  ],
+  "compose_override": "docker-compose.runtime.yaml",
+  "replay_script": "replay_runtime.sh",
+  "compose_check": {
+    "returncode": 0,
+    "pass": true
+  },
+  "udp_injector": {
+    "returncode": 0,
+    "pass": true
+  },
+  "pass": true
+}

@@ -1,0 +1,13 @@
+-- Auto-generated bootstrap NuSMV for 5.3.13 RRC connection resume
+MODULE main
+VAR state : {RRC_CONNECTED, RRC_IDLE, RRC_INACTIVE, RRC_RESUME_REQUESTED};
+ASSIGN
+  init(state) := RRC_INACTIVE;
+  next(state) := case
+    state = RRC_INACTIVE : RRC_RESUME_REQUESTED;
+    state = RRC_RESUME_REQUESTED : RRC_CONNECTED; -- guard: fullConfig_present
+    state = RRC_RESUME_REQUESTED : RRC_CONNECTED; -- guard: not fullConfig_present and masterCellGroup_present
+    state = RRC_RESUME_REQUESTED : RRC_IDLE;
+    state = RRC_RESUME_REQUESTED : RRC_IDLE;
+    TRUE : state;
+  esac;

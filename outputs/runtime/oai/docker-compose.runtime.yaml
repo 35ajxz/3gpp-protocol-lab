@@ -1,0 +1,10 @@
+services:
+  oai-gnb:
+    volumes:
+      - /home/huazi4ai/3gpp-protocol-lab/outputs/runtime:/opt/3gpp-runtime:ro
+  oai-nr-ue:
+    volumes:
+      - /home/huazi4ai/3gpp-protocol-lab/outputs/runtime:/opt/3gpp-runtime:ro
+  oai-nr-ue2:
+    volumes:
+      - /home/huazi4ai/3gpp-protocol-lab/outputs/runtime:/opt/3gpp-runtime:ro

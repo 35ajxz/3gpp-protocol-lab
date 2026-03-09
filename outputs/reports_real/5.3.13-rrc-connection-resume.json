@@ -1,0 +1,57 @@
+{
+  "efsm_file": "5.3.13-rrc-connection-resume.json",
+  "structure_errors": [],
+  "step_sequence": {
+    "expected": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "actual": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "match": true
+  },
+  "messages": {
+    "category": "messages",
+    "expected": 5,
+    "matched": 5,
+    "coverage": 1.0,
+    "missing": []
+  },
+  "timers": {
+    "category": "timers",
+    "expected": 12,
+    "matched": 12,
+    "coverage": 1.0,
+    "missing": []
+  },
+  "variables": {
+    "category": "variables",
+    "expected": 4,
+    "matched": 4,
+    "coverage": 1.0,
+    "missing": []
+  },
+  "reference_format": {
+    "invalid": [],
+    "match": true
+  },
+  "pass": true
+}

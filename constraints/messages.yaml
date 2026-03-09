@@ -1,0 +1,51 @@
+messages:
+  RRCSetupRequest:
+    fields:
+      ue_Identity:
+        kind: integer
+        min: 0
+        max: 549755813887
+        nominal: 77
+        edge_values: [0, 1, 549755813887]
+      establishmentCause:
+        kind: enum
+        values: [mo_Signalling, mo_Data, emergency]
+        nominal: mo_Signalling
+  RRCSetup:
+    fields:
+      fullConfig:
+        kind: boolean
+        nominal: true
+      dedicatedNAS:
+        kind: optional_blob
+        nominal: "<nas>"
+  RRCResumeRequest:
+    fields:
+      resumeIdentity:
+        kind: integer
+        min: 0
+        max: 1099511627775
+        nominal: 101
+        edge_values: [0, 1, 1099511627775]
+  RRCResume:
+    fields:
+      fullConfig:
+        kind: boolean
+        nominal: false
+      masterCellGroup:
+        kind: optional_blob
+        nominal: "<mcg>"
+      radioBearerConfig:
+        kind: optional_blob
+        nominal: "<rbcfg>"
+      skCounter:
+        kind: integer
+        min: 0
+        max: 65535
+        nominal: 10
+        edge_values: [0, 1, 65535]
+      suspendConfig:
+        kind: optional_blob
+        nominal: "<suspend>"
+  RRCReject:
+    fields: {}

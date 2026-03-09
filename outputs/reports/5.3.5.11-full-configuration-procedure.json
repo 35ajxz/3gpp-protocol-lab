@@ -1,0 +1,31 @@
+{
+  "efsm_file": "5.3.5.11-full-configuration-procedure.json",
+  "structure_errors": [],
+  "bullet_alignment": {
+    "expected": 1,
+    "actual": 1,
+    "match": true
+  },
+  "terminology_coverage": {
+    "timers": {
+      "expected": 0,
+      "matched": 0,
+      "coverage": 1.0
+    },
+    "messages": {
+      "expected": 2,
+      "matched": 2,
+      "coverage": 1.0
+    },
+    "variables": {
+      "expected": 1,
+      "matched": 1,
+      "coverage": 1.0
+    }
+  },
+  "reference_closure": {
+    "unresolved_refs": [],
+    "match": true
+  },
+  "pass": true
+}

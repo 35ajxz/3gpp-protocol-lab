@@ -1,0 +1,12 @@
+{
+  "source_archive": "38331-h60.zip",
+  "paragraph_count": 49972,
+  "raw_markdown": "ts-38.331-v17.6.0.md",
+  "slice_count": 3,
+  "slices": [
+    "5.3.13-rrc-connection-resume.md",
+    "5.3.3-rrc-connection-establishment.md",
+    "5.3.5.11-full-configuration.md"
+  ],
+  "pass": true
+}

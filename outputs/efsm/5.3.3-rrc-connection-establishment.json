@@ -1,0 +1,69 @@
+{
+  "spec": "TS 38.331",
+  "release": "Rel-17",
+  "source_document": "5.3.3-rrc-connection-establishment.md",
+  "procedure": {
+    "id": "5.3.3",
+    "title": "RRC connection establishment",
+    "slug": "5.3.3-rrc-connection-establishment"
+  },
+  "messages": [
+    "RRCSetupRequest",
+    "RRCSetup"
+  ],
+  "timers": [
+    "T300"
+  ],
+  "variables": [
+    "ue_Identity",
+    "establishmentCause",
+    "fullConfig",
+    "dedicatedNAS"
+  ],
+  "transitions": [
+    {
+      "step": 1,
+      "source_state": "RRC_IDLE",
+      "event": "upper_layers_request",
+      "guard": null,
+      "actions": [
+        "start_timer(T300)",
+        "send_message(RRCSetupRequest,ue_Identity,establishmentCause)"
+      ],
+      "target_state": "RRC_SETUP_REQUESTED",
+      "refs": [
+        "5.3.3.2"
+      ]
+    },
+    {
+      "step": 2,
+      "source_state": "RRC_SETUP_REQUESTED",
+      "event": "receive(RRCSetup)",
+      "guard": "fullConfig_present",
+      "actions": [
+        "stop_timer(T300)",
+        "reset_as_context",
+        "deliver_dedicatedNAS_if_present"
+      ],
+      "target_state": "RRC_CONNECTED",
+      "refs": [
+        "5.3.3.4",
+        "5.3.5.11"
+      ]
+    },
+    {
+      "step": 3,
+      "source_state": "RRC_SETUP_REQUESTED",
+      "event": "timer_expiry(T300)",
+      "guard": null,
+      "actions": [
+        "increment_setup_attempt",
+        "discard_pending_setup"
+      ],
+      "target_state": "RRC_IDLE",
+      "refs": [
+        "5.3.3.7"
+      ]
+    }
+  ]
+}

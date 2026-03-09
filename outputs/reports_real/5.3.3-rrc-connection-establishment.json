@@ -1,0 +1,53 @@
+{
+  "efsm_file": "5.3.3-rrc-connection-establishment.json",
+  "structure_errors": [],
+  "step_sequence": {
+    "expected": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "actual": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "match": true
+  },
+  "messages": {
+    "category": "messages",
+    "expected": 5,
+    "matched": 5,
+    "coverage": 1.0,
+    "missing": []
+  },
+  "timers": {
+    "category": "timers",
+    "expected": 9,
+    "matched": 9,
+    "coverage": 1.0,
+    "missing": []
+  },
+  "variables": {
+    "category": "variables",
+    "expected": 14,
+    "matched": 14,
+    "coverage": 1.0,
+    "missing": []
+  },
+  "reference_format": {
+    "invalid": [],
+    "match": true
+  },
+  "pass": true
+}

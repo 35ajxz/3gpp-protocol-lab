@@ -1,0 +1,187 @@
+{
+  "spec": "TS 38.331",
+  "release": "Rel-17",
+  "source_document": "5.3.3-rrc-connection-establishment.md",
+  "procedure": {
+    "id": "5.3.3",
+    "title": "RRC connection establishment",
+    "slug": "5.3.3-rrc-connection-establishment"
+  },
+  "messages": [
+    "RRCSetupRequest",
+    "RRCSetup",
+    "RRCSetupComplete",
+    "RRCReject",
+    "NotificationMessageSidelink"
+  ],
+  "timers": [
+    "T300",
+    "T301",
+    "T302",
+    "T319",
+    "T319a",
+    "T320",
+    "T331",
+    "T380",
+    "T390"
+  ],
+  "variables": [
+    "establishmentCause",
+    "masterCellGroup",
+    "radioBearerConfig",
+    "sl-L2RemoteUE-Config",
+    "sl-ConfigDedicatedNR",
+    "dedicatedNAS-Message",
+    "registeredAMF",
+    "plmnIdentity",
+    "amf-Identifier",
+    "mobilityState",
+    "connEstFailCount",
+    "connEstFailureControl",
+    "VarRLF-Report",
+    "reconnectCellId"
+  ],
+  "transitions": [
+    {
+      "step": 1,
+      "source_state": "RRC_IDLE",
+      "event": "upper_layers_request_establishment",
+      "guard": "essential system information is valid and up to date, or sidelink condition in 5.3.3.1a is met",
+      "actions": [
+        "start_timer(T300)",
+        "send_message(RRCSetupRequest,establishmentCause)"
+      ],
+      "target_state": "RRC_SETUP_REQUESTED",
+      "refs": [
+        "5.3.3.1a"
+      ]
+    },
+    {
+      "step": 2,
+      "source_state": "RRC_SETUP_REQUESTED",
+      "event": "lower_layers_transmit(RRCSetupRequest)",
+      "guard": "null",
+      "actions": [
+        "set establishmentCause from upper layers or mps-PriorityAccess",
+        "submit RRCSetupRequest to lower layers"
+      ],
+      "target_state": "RRC_SETUP_REQUESTED",
+      "refs": [
+        "5.3.3.3"
+      ]
+    },
+    {
+      "step": 3,
+      "source_state": "RRC_SETUP_REQUESTED",
+      "event": "cell_reselection_or_relay_reselection",
+      "guard": "T300 or T302 is running",
+      "actions": [
+        "if T390 is running then stop_timer(T390)"
+      ],
+      "target_state": "RRC_SETUP_REQUESTED",
+      "refs": [
+        "5.3.3.6"
+      ]
+    },
+    {
+      "step": 4,
+      "source_state": "RRC_SETUP_REQUESTED",
+      "event": "receive(RRCSetup)",
+      "guard": "response to RRCSetupRequest",
+      "actions": [
+        "perform cell group configuration using masterCellGroup",
+        "perform radio bearer configuration using radioBearerConfig",
+        "stop_timer(T300)",
+        "stop_timer(T301)",
+        "stop_timer(T319)",
+        "if T319a is running then stop_timer(T319a)",
+        "if T390 is running then stop_timer(T390)",
+        "if T302 is running then stop_timer(T302)",
+        "stop_timer(T320)",
+        "if T331 is running then stop_timer(T331)",
+        "enter RRC_CONNECTED",
+        "perform L2 U2N Remote UE configuration using sl-L2RemoteUE-Config",
+        "perform sidelink dedicated configuration using sl-ConfigDedicatedNR",
+        "send_message(RRCSetupComplete,registeredAMF,plmnIdentity,amf-Identifier,dedicatedNAS-Message,mobilityState)"
+      ],
+      "target_state": "RRC_CONNECTED",
+      "refs": [
+        "5.3.5.5",
+        "5.3.5.6",
+        "5.3.5.16",
+        "5.3.5.14"
+      ]
+    },
+    {
+      "step": 5,
+      "source_state": "RRC_SETUP_REQUESTED",
+      "event": "receive(RRCSetup)",
+      "guard": "response to RRCResumeRequest, RRCResumeRequest1, or RRCReestablishmentRequest",
+      "actions": [
+        "if T380 is running then stop_timer(T380)",
+        "perform cell group configuration using masterCellGroup",
+        "perform radio bearer configuration using radioBearerConfig",
+        "stop_timer(T300)",
+        "stop_timer(T301)",
+        "stop_timer(T319)",
+        "if T319a is running then stop_timer(T319a)",
+        "if T390 is running then stop_timer(T390)",
+        "if T302 is running then stop_timer(T302)",
+        "stop_timer(T320)",
+        "if response was to RRCResumeRequest or RRCResumeRequest1 then if T331 is running then stop_timer(T331)",
+        "if response was to RRCResumeRequest or RRCResumeRequest1 then enter RRC_CONNECTED",
+        "perform L2 U2N Remote UE configuration using sl-L2RemoteUE-Config",
+        "perform sidelink dedicated configuration using sl-ConfigDedicatedNR",
+        "send_message(RRCSetupComplete,dedicatedNAS-Message,mobilityState)"
+      ],
+      "target_state": "RRC_CONNECTED",
+      "refs": [
+        "5.3.5.5",
+        "5.3.5.6",
+        "5.3.5.16",
+        "5.3.5.14"
+      ]
+    },
+    {
+      "step": 6,
+      "source_state": "RRC_SETUP_REQUESTED",
+      "event": "receive(RRCReject)",
+      "guard": "null",
+      "actions": [
+        "handle RRCReject"
+      ],
+      "target_state": "PROCEDURE_REJECTED",
+      "refs": [
+        "5.3.3.5"
+      ]
+    },
+    {
+      "step": 7,
+      "source_state": "RRC_SETUP_REQUESTED",
+      "event": "T300_expiry",
+      "guard": "null",
+      "actions": [
+        "if temporary offset failure handling condition is met then handle establishment failure",
+        "L2 U2N Relay UE indicates upper layers or send_message(NotificationMessageSidelink)"
+      ],
+      "target_state": "PROCEDURE_ABORTED",
+      "refs": [
+        "5.8.9.10"
+      ]
+    },
+    {
+      "step": 8,
+      "source_state": "RRC_SETUP_REQUESTED",
+      "event": "upper_layers_abort",
+      "guard": "UE has not yet entered RRC_CONNECTED",
+      "actions": [
+        "if T300 is running then stop_timer(T300)",
+        "L2 U2N Relay UE indicates upper layers or send_message(NotificationMessageSidelink)"
+      ],
+      "target_state": "PROCEDURE_ABORTED",
+      "refs": [
+        "5.8.9.10"
+      ]
+    }
+  ]
+}

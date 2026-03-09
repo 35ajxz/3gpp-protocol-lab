@@ -1,0 +1,61 @@
+{
+  "efsm_file": "5.3.5.11-full-configuration.json",
+  "structure_errors": [],
+  "step_sequence": {
+    "expected": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "actual": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "match": true
+  },
+  "messages": {
+    "category": "messages",
+    "expected": 0,
+    "matched": 0,
+    "coverage": 1.0,
+    "missing": []
+  },
+  "timers": {
+    "category": "timers",
+    "expected": 3,
+    "matched": 3,
+    "coverage": 1.0,
+    "missing": []
+  },
+  "variables": {
+    "category": "variables",
+    "expected": 25,
+    "matched": 25,
+    "coverage": 1.0,
+    "missing": []
+  },
+  "reference_format": {
+    "invalid": [],
+    "match": true
+  },
+  "pass": true
+}

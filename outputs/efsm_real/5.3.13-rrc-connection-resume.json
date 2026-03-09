@@ -1,0 +1,197 @@
+{
+  "spec": "TS 38.331",
+  "release": "Rel-17",
+  "source_document": "5.3.13-rrc-connection-resume.md",
+  "procedure": {
+    "id": "5.3.13",
+    "title": "RRC connection resume",
+    "slug": "5.3.13-rrc-connection-resume"
+  },
+  "messages": [
+    "RRCResumeRequest",
+    "RRCResumeRequest1",
+    "RRCResume",
+    "RRCResumeComplete",
+    "NotificationMessageSidelink"
+  ],
+  "timers": [
+    "T342",
+    "T345",
+    "T346f",
+    "T346i",
+    "T346h",
+    "T319a",
+    "T319",
+    "T380",
+    "T331",
+    "T320",
+    "T390",
+    "T302"
+  ],
+  "variables": [
+    "resumeCause",
+    "pendingRNA-Update",
+    "KgNB",
+    "nextHopChainingCount"
+  ],
+  "transitions": [
+    {
+      "step": 1,
+      "source_state": "RRC_INACTIVE",
+      "event": "upper_layers_or_AS_resume_request",
+      "guard": "valid and up to date essential system information available",
+      "actions": [
+        "set resumeCause",
+        "stop T342 if running",
+        "stop T345 if running",
+        "stop T346f if running",
+        "stop T346i if running",
+        "stop T346h if running",
+        "set pendingRNA-Update to false"
+      ],
+      "target_state": "RRC_INACTIVE",
+      "refs": [
+        "5.3.13.2"
+      ]
+    },
+    {
+      "step": 2,
+      "source_state": "RRC_INACTIVE",
+      "event": "receive(L2_U2N_remote_message_via_SL_RLC0_or_SL_RLC1)",
+      "guard": null,
+      "actions": [
+        "set resumeCause",
+        "stop T342 if running",
+        "stop T345 if running",
+        "stop T346f if running",
+        "stop T346i if running",
+        "stop T346h if running",
+        "set pendingRNA-Update to false"
+      ],
+      "target_state": "RRC_INACTIVE",
+      "refs": [
+        "5.3.13.1a",
+        "5.3.13.2"
+      ]
+    },
+    {
+      "step": 3,
+      "source_state": "RRC_INACTIVE",
+      "event": "resume_procedure_initiated",
+      "guard": null,
+      "actions": [
+        "start T319a when lower layers first transmit the CCCH message",
+        "start T319",
+        "derive KgNB using nextHopChainingCount",
+        "configure integrity protection except SRB0 and MRBs",
+        "configure ciphering except SRB0 and MRBs",
+        "send_message(RRCResumeRequest) or send_message(RRCResumeRequest1)"
+      ],
+      "target_state": "RRC_INACTIVE",
+      "refs": [
+        "5.3.13.2",
+        "5.3.13.3"
+      ]
+    },
+    {
+      "step": 4,
+      "source_state": "RRC_INACTIVE",
+      "event": "receive(RRCResume)",
+      "guard": null,
+      "actions": [
+        "stop T319 if running",
+        "stop T319a if running",
+        "stop T380 if running",
+        "stop T331 if running",
+        "stop T320 if running",
+        "stop T390 if running",
+        "stop T302 if running",
+        "apply received masterCellGroup if included",
+        "enter RRC_CONNECTED",
+        "send_message(RRCResumeComplete,dedicatedNAS-Message,measResultIdleEUTRA,measResultIdleNR,logMeasAvailable,logMeasAvailableBT,logMeasAvailableWLAN,sigLogMeasConfigAvailable,connEstFailInfoAvailable,rlf-InfoAvailable,successHO-InfoAvailable,mobilityHistoryAvail,mobilityState)"
+      ],
+      "target_state": "RRC_CONNECTED",
+      "refs": [
+        "5.3.13.4"
+      ]
+    },
+    {
+      "step": 5,
+      "source_state": "RRC_INACTIVE",
+      "event": "T319_expiry_or_integrity_failure_or_SDT_failure",
+      "guard": null,
+      "actions": [
+        "perform failure handling for resume"
+      ],
+      "target_state": "PROCEDURE_ABORTED",
+      "refs": [
+        "5.3.13.5"
+      ]
+    },
+    {
+      "step": 6,
+      "source_state": "RRC_INACTIVE",
+      "event": "resume_failure_as_L2_U2N_Relay_UE",
+      "guard": null,
+      "actions": [
+        "send_message(NotificationMessageSidelink)"
+      ],
+      "target_state": "PROCEDURE_ABORTED",
+      "refs": [
+        "5.3.13.5"
+      ]
+    },
+    {
+      "step": 7,
+      "source_state": "RRC_INACTIVE",
+      "event": "cell_reselection_or_selection_or_relay_reselection_while_T319_T302_T390_or_SDT",
+      "guard": null,
+      "actions": [
+        "stop T390 for all access categories if running"
+      ],
+      "target_state": "RRC_INACTIVE",
+      "refs": [
+        "5.3.13.6"
+      ]
+    },
+    {
+      "step": 8,
+      "source_state": "RRC_INACTIVE",
+      "event": "T380_expiry",
+      "guard": "T319 is not running and SDT procedure is not ongoing",
+      "actions": [
+        "set resumeCause to rna-Update"
+      ],
+      "target_state": "RRC_INACTIVE",
+      "refs": [
+        "5.3.13.8"
+      ]
+    },
+    {
+      "step": 9,
+      "source_state": "RRC_INACTIVE",
+      "event": "T380_expiry",
+      "guard": "pendingRNA-Update is true",
+      "actions": [
+        "set resumeCause to rna-Update"
+      ],
+      "target_state": "RRC_INACTIVE",
+      "refs": [
+        "5.3.13.8"
+      ]
+    },
+    {
+      "step": 10,
+      "source_state": "RRC_CONNECTED",
+      "event": "inability_to_comply_with_RRCResume",
+      "guard": null,
+      "actions": [
+        "apply failure handling"
+      ],
+      "target_state": "PROCEDURE_ABORTED",
+      "refs": [
+        "5.3.13.11"
+      ]
+    }
+  ]
+}

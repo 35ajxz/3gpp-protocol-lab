@@ -1,0 +1,6 @@
+stateDiagram-v2
+    RRC_INACTIVE --> RRC_RESUME_REQUESTED: upper_layers_resume_request / start_timer(T319), send_message(RRCResumeRequest,resumeIdentity)
+    RRC_RESUME_REQUESTED --> RRC_CONNECTED: receive(RRCResume) [fullConfig_present] / stop_timer(T319), perform_full_configuration, release_suspendConfig_keep_rna
+    RRC_RESUME_REQUESTED --> RRC_CONNECTED: receive(RRCResume) [not fullConfig_present and masterCellGroup_present] / stop_timer(T319), apply_masterCellGroup_delta, update_radioBearerConfig_if_present, update_skCounter_if_present
+    RRC_RESUME_REQUESTED --> RRC_IDLE: receive(RRCReject) / stop_timer(T319), clear_resume_context
+    RRC_RESUME_REQUESTED --> RRC_IDLE: timer_expiry(T319) / clear_resume_context, reselect_cell

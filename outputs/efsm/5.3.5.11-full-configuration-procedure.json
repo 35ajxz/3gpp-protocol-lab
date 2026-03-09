@@ -1,0 +1,35 @@
+{
+  "spec": "TS 38.331",
+  "release": "Rel-17",
+  "source_document": "5.3.5.11-full-configuration-procedure.md",
+  "procedure": {
+    "id": "5.3.5.11",
+    "title": "Full configuration procedure",
+    "slug": "5.3.5.11-full-configuration-procedure"
+  },
+  "messages": [
+    "RRCResume",
+    "RRCSetup"
+  ],
+  "timers": [],
+  "variables": [
+    "fullConfig"
+  ],
+  "transitions": [
+    {
+      "step": 1,
+      "source_state": "RRC_CONFIGURATION_PENDING",
+      "event": "fullConfig_present",
+      "guard": null,
+      "actions": [
+        "reset_mac",
+        "reset_rlc",
+        "reconfigure_srb1"
+      ],
+      "target_state": "RRC_CONFIGURATION_APPLIED",
+      "refs": [
+        "5.3.5.11"
+      ]
+    }
+  ]
+}

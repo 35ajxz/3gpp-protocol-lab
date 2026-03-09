@@ -1,0 +1,163 @@
+{
+  "asn1_file": "NR-RRC-Definitions.asn1",
+  "type_count": 1911,
+  "roundtrips": [
+    {
+      "name": "setup_request_nominal",
+      "encoded_hex": "800000002630",
+      "encoded_size": 6,
+      "payload": {
+        "rrcSetupRequest": {
+          "ue-Identity": [
+            "randomValue",
+            {
+              "hex": "000000004d",
+              "bits": 39
+            }
+          ],
+          "establishmentCause": "mo-Signalling",
+          "spare": {
+            "hex": "00",
+            "bits": 1
+          }
+        }
+      },
+      "decoded": {
+        "rrcSetupRequest": {
+          "ue-Identity": [
+            "randomValue",
+            {
+              "hex": "000000004c",
+              "bits": 39
+            }
+          ],
+          "establishmentCause": "mo-Signalling",
+          "spare": {
+            "hex": "00",
+            "bits": 1
+          }
+        }
+      },
+      "roundtrip_ok": true
+    },
+    {
+      "name": "setup_request_boundary",
+      "encoded_hex": "bfffffffff00",
+      "encoded_size": 6,
+      "payload": {
+        "rrcSetupRequest": {
+          "ue-Identity": [
+            "randomValue",
+            {
+              "hex": "7fffffffff",
+              "bits": 39
+            }
+          ],
+          "establishmentCause": "emergency",
+          "spare": {
+            "hex": "00",
+            "bits": 1
+          }
+        }
+      },
+      "decoded": {
+        "rrcSetupRequest": {
+          "ue-Identity": [
+            "randomValue",
+            {
+              "hex": "7ffffffffe",
+              "bits": 39
+            }
+          ],
+          "establishmentCause": "emergency",
+          "spare": {
+            "hex": "00",
+            "bits": 1
+          }
+        }
+      },
+      "roundtrip_ok": true
+    },
+    {
+      "name": "resume_request_nominal",
+      "encoded_hex": "000065aabb40",
+      "encoded_size": 6,
+      "payload": {
+        "rrcResumeRequest": {
+          "resumeIdentity": {
+            "hex": "000065",
+            "bits": 24
+          },
+          "resumeMAC-I": {
+            "hex": "aabb",
+            "bits": 16
+          },
+          "resumeCause": "mo-Data",
+          "spare": {
+            "hex": "00",
+            "bits": 1
+          }
+        }
+      },
+      "decoded": {
+        "rrcResumeRequest": {
+          "resumeIdentity": {
+            "hex": "000065",
+            "bits": 24
+          },
+          "resumeMAC-I": {
+            "hex": "aabb",
+            "bits": 16
+          },
+          "resumeCause": "mo-Data",
+          "spare": {
+            "hex": "00",
+            "bits": 1
+          }
+        }
+      },
+      "roundtrip_ok": true
+    },
+    {
+      "name": "resume_request_boundary",
+      "encoded_hex": "ffffffaabb40",
+      "encoded_size": 6,
+      "payload": {
+        "rrcResumeRequest": {
+          "resumeIdentity": {
+            "hex": "ffffff",
+            "bits": 24
+          },
+          "resumeMAC-I": {
+            "hex": "aabb",
+            "bits": 16
+          },
+          "resumeCause": "mo-Data",
+          "spare": {
+            "hex": "00",
+            "bits": 1
+          }
+        }
+      },
+      "decoded": {
+        "rrcResumeRequest": {
+          "resumeIdentity": {
+            "hex": "ffffff",
+            "bits": 24
+          },
+          "resumeMAC-I": {
+            "hex": "aabb",
+            "bits": 16
+          },
+          "resumeCause": "mo-Data",
+          "spare": {
+            "hex": "00",
+            "bits": 1
+          }
+        }
+      },
+      "roundtrip_ok": true
+    }
+  ],
+  "pass": true
+}

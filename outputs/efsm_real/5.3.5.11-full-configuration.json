@@ -1,0 +1,217 @@
+{
+  "spec": "TS 38.331",
+  "release": "Rel-17",
+  "source_document": "5.3.5.11-full-configuration.md",
+  "procedure": {
+    "id": "5.3.5.11",
+    "title": "Full configuration",
+    "slug": "5.3.5.11-full-configuration"
+  },
+  "messages": [],
+  "timers": [
+    "T301",
+    "T310",
+    "T311"
+  ],
+  "variables": [
+    "MCG C-RNTI",
+    "AS security configurations associated with the master key",
+    "SRB1",
+    "SRB2",
+    "DRB",
+    "multicast MRB",
+    "radioBearerConfig",
+    "radioBearerConfig2",
+    "logged measurement configuration",
+    "spCellConfig",
+    "masterCellGroup",
+    "reconfigurationWithSync",
+    "sl-PathSwitchConfig",
+    "N310",
+    "N311",
+    "ue-TimersAndConstants",
+    "SIB1",
+    "measConfigAppLayerId",
+    "SL-RLC1",
+    "srb-ToAddModList",
+    "srb-Identity",
+    "pdu-Session",
+    "mbs-SessionId",
+    "drb-ToAddModList",
+    "mrb-ToAddModList"
+  ],
+  "transitions": [
+    {
+      "step": 1,
+      "source_state": "RRC_CONNECTED",
+      "event": "full_configuration_triggered",
+      "guard": null,
+      "actions": [
+        "release_or_clear_all_current_dedicated_radio_configurations_except(MCG C-RNTI,AS security configurations associated with the master key,SRB1/SRB2 configurations,DRB/multicast MRB configurations configured by radioBearerConfig or radioBearerConfig2,logged measurement configuration)"
+      ],
+      "target_state": "FULL_CONFIG_RESET",
+      "refs": [
+        "5.3.5.10"
+      ]
+    },
+    {
+      "step": 2,
+      "source_state": "FULL_CONFIG_RESET",
+      "event": "evaluate_reconfiguration_context",
+      "guard": "spCellConfig in masterCellGroup includes reconfigurationWithSync",
+      "actions": [
+        "release_or_clear_all_current_common_radio_configurations"
+      ],
+      "target_state": "FULL_CONFIG_COMMON_RELEASED",
+      "refs": [
+        "9.2.3"
+      ]
+    },
+    {
+      "step": 3,
+      "source_state": "FULL_CONFIG_COMMON_RELEASED",
+      "event": "evaluate_path_switch",
+      "guard": "sl-PathSwitchConfig included in reconfigurationWithSync",
+      "actions": [
+        "set_timer_to_default(T311)"
+      ],
+      "target_state": "FULL_CONFIG_TIMERS_UPDATED",
+      "refs": [
+        "9.2.3"
+      ]
+    },
+    {
+      "step": 4,
+      "source_state": "FULL_CONFIG_COMMON_RELEASED",
+      "event": "evaluate_path_switch",
+      "guard": "sl-PathSwitchConfig not included in reconfigurationWithSync",
+      "actions": [
+        "set_timers_and_constants_to_default(T310,T311,N310,N311)"
+      ],
+      "target_state": "FULL_CONFIG_TIMERS_UPDATED",
+      "refs": [
+        "9.2.3"
+      ]
+    },
+    {
+      "step": 5,
+      "source_state": "FULL_CONFIG_RESET",
+      "event": "evaluate_resume_or_reestablishment",
+      "guard": "spCellConfig in masterCellGroup does not include reconfigurationWithSync and UE is acting as L2 U2N Remote UE",
+      "actions": [
+        "set_timer_from_sib1(T311,ue-TimersAndConstants)"
+      ],
+      "target_state": "FULL_CONFIG_TIMERS_UPDATED",
+      "refs": [
+        "9.2.3"
+      ]
+    },
+    {
+      "step": 6,
+      "source_state": "FULL_CONFIG_RESET",
+      "event": "evaluate_resume_or_reestablishment",
+      "guard": "spCellConfig in masterCellGroup does not include reconfigurationWithSync and UE is not acting as L2 U2N Remote UE",
+      "actions": [
+        "set_timers_and_constants_from_sib1(T301,T310,T311,N310,N311,ue-TimersAndConstants)"
+      ],
+      "target_state": "FULL_CONFIG_TIMERS_UPDATED",
+      "refs": [
+        "9.2.3"
+      ]
+    },
+    {
+      "step": 7,
+      "source_state": "FULL_CONFIG_TIMERS_UPDATED",
+      "event": "check_app_layer_measurement_config",
+      "guard": "no measConfigAppLayerId is included",
+      "actions": [
+        "inform_upper_layers_release_of_all_application_layer_measurement_configurations",
+        "discard_received_application_layer_measurement_reports",
+        "mark_application_layer_measurement_reporting_not_configured"
+      ],
+      "target_state": "FULL_CONFIG_MEAS_UPDATED",
+      "refs": [
+        "9.2.4"
+      ]
+    },
+    {
+      "step": 8,
+      "source_state": "FULL_CONFIG_MEAS_UPDATED",
+      "event": "evaluate_remote_ue_bearer_handling",
+      "guard": "UE is acting as L2 U2N Remote UE at target side during reconfigurationWithSync, or after re-establishment, or during RRC resume",
+      "actions": [
+        "apply_default_configuration(SL-RLC1)",
+        "associate(SL-RLC1,SRB1)"
+      ],
+      "target_state": "FULL_CONFIG_BEARERS_PREPARED",
+      "refs": [
+        "9.2.4"
+      ]
+    },
+    {
+      "step": 9,
+      "source_state": "FULL_CONFIG_MEAS_UPDATED",
+      "event": "evaluate_remote_ue_bearer_handling",
+      "guard": "UE is not acting as L2 U2N Remote UE at target side during reconfigurationWithSync, after re-establishment, or during RRC resume",
+      "actions": [
+        "apply_default_L1_parameter_values_except_those_provided_in(SIB1)",
+        "apply_default_MAC_Cell_Group_configuration",
+        "for_each(srb-Identity in srb-ToAddModList): establish_RLC_entity_for_SRB",
+        "for_each(srb-Identity in srb-ToAddModList): apply_default_SRB_configuration"
+      ],
+      "target_state": "FULL_CONFIG_BEARERS_PREPARED",
+      "refs": [
+        "9.2.1",
+        "9.2.2"
+      ]
+    },
+    {
+      "step": 10,
+      "source_state": "FULL_CONFIG_BEARERS_PREPARED",
+      "event": "release_user_plane_entities",
+      "guard": null,
+      "actions": [
+        "for_each(pdu-Session in current_UE_configuration): release_SDAP_entity",
+        "for_each(pdu-Session in current_UE_configuration): release_each_associated_DRB",
+        "for_each(mbs-SessionId in current_UE_configuration associated_to_multicast_MRB): release_SDAP_entity",
+        "for_each(mbs-SessionId in current_UE_configuration associated_to_multicast_MRB): release_each_associated_multicast_MRB"
+      ],
+      "target_state": "FULL_CONFIG_UP_RELEASED",
+      "refs": [
+        "5.1.2",
+        "5.3.5.6.4",
+        "5.3.5.6.6"
+      ]
+    },
+    {
+      "step": 11,
+      "source_state": "FULL_CONFIG_UP_RELEASED",
+      "event": "notify_upper_layers_for_non_readded_sessions",
+      "guard": "procedure was triggered due to reconfigurationWithSync",
+      "actions": [
+        "for_each(pdu-Session not added with same pdu-Session in drb-ToAddModList): indicate_release_of_user_plane_resources_to_upper_layers_after_successful_reconfigurationWithSync",
+        "for_each(mbs-SessionId not added with same mbs-SessionId in mrb-ToAddModList): indicate_release_of_user_plane_resources_to_upper_layers_after_successful_reconfigurationWithSync"
+      ],
+      "target_state": "RRC_CONNECTED",
+      "refs": [
+        "5.3.5.6.5",
+        "5.3.5.6.7"
+      ]
+    },
+    {
+      "step": 12,
+      "source_state": "FULL_CONFIG_UP_RELEASED",
+      "event": "notify_upper_layers_for_non_readded_sessions",
+      "guard": "procedure was not triggered due to reconfigurationWithSync",
+      "actions": [
+        "for_each(pdu-Session not added with same pdu-Session in drb-ToAddModList): indicate_release_of_user_plane_resources_to_upper_layers_immediately",
+        "for_each(mbs-SessionId not added with same mbs-SessionId in mrb-ToAddModList): indicate_release_of_user_plane_resources_to_upper_layers_immediately"
+      ],
+      "target_state": "RRC_CONNECTED",
+      "refs": [
+        "5.3.5.6.5",
+        "5.3.5.6.7"
+      ]
+    }
+  ]
+}
