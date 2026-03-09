@@ -257,11 +257,11 @@
 
 ### 2.5 核心执行入口
 
-- [run_real_pipeline.py](/home/huazi4ai/3gpp-protocol-lab/scripts/run_real_pipeline.py)  
+- `scripts/run_real_pipeline.py`  
   串起真实规范导入、ASN.1 提取/校验、状态机提取与运行时产物生成。
-- [run_logic_campaign.py](/home/huazi4ai/3gpp-protocol-lab/scripts/run_logic_campaign.py)  
+- `scripts/run_logic_campaign.py`  
   执行逻辑漏洞测试批次并输出汇总结果。
-- [Makefile](/home/huazi4ai/3gpp-protocol-lab/Makefile)  
+- `Makefile`  
   提供 `real / logic / test / venv` 等快捷入口。
 
 ## 3. 当前已实现的功能或状态
@@ -289,24 +289,24 @@
 ### 3.2 当前状态指标
 
 - 真实文档导入
-  - [real_ingest.json](/home/huazi4ai/3gpp-protocol-lab/outputs/reports_real/real_ingest.json) 显示：
+  - `outputs/reports_real/real_ingest.json` 显示：
     - `paragraph_count = 49972`
     - `slice_count = 3`
 
 - 真实状态机校验
-  - [5.3.3 报告](/home/huazi4ai/3gpp-protocol-lab/outputs/reports_real/5.3.3-rrc-connection-establishment.json)
-  - [5.3.5.11 报告](/home/huazi4ai/3gpp-protocol-lab/outputs/reports_real/5.3.5.11-full-configuration.json)
-  - [5.3.13 报告](/home/huazi4ai/3gpp-protocol-lab/outputs/reports_real/5.3.13-rrc-connection-resume.json)
+  - `outputs/reports_real/5.3.3-rrc-connection-establishment.json`
+  - `outputs/reports_real/5.3.5.11-full-configuration.json`
+  - `outputs/reports_real/5.3.13-rrc-connection-resume.json`
   - 当前均为 `pass = true`
 
 - ASN.1 校验
-  - [validation.json](/home/huazi4ai/3gpp-protocol-lab/outputs/asn1/validation.json) 显示：
+  - `outputs/asn1/validation.json` 显示：
     - `type_count = 1911`
     - `RRCSetupRequest` 正常值/边界值往返通过
     - `RRCResumeRequest` 正常值/边界值往返通过
 
 - 逻辑漏洞挖掘
-  - [summary.json](/home/huazi4ai/3gpp-protocol-lab/outputs/logic/summary.json) 显示：
+  - `outputs/logic/summary.json` 显示：
     - `case_count = 14`
     - `finding_count = 25`
     - `cases_with_findings = 10`
@@ -316,7 +316,7 @@
     - `invariant_violation = 7`
 
 - 运行时产物
-  - [manifest.json](/home/huazi4ai/3gpp-protocol-lab/outputs/runtime/manifest.json) 显示：
+  - `outputs/runtime/manifest.json` 显示：
     - `entry_count = 13`
     - `compose_check.pass = true`
     - `udp_injector.pass = true`
@@ -518,15 +518,15 @@ python3 -m unittest discover -s tests
 
 如果你是第一次接手这个工程，建议按下面顺序阅读：
 
-1. [real_ingest.json](/home/huazi4ai/3gpp-protocol-lab/outputs/reports_real/real_ingest.json)  
+1. `outputs/reports_real/real_ingest.json`  
    先看真实规范导入范围。
-2. [validation.json](/home/huazi4ai/3gpp-protocol-lab/outputs/asn1/validation.json)  
+2. `outputs/asn1/validation.json`  
    再看消息约束有没有真正被验证。
-3. [summary.json](/home/huazi4ai/3gpp-protocol-lab/outputs/logic/summary.json) 和 [findings.json](/home/huazi4ai/3gpp-protocol-lab/outputs/logic/findings.json)  
+3. `outputs/logic/summary.json` 和 `outputs/logic/findings.json`  
    看逻辑漏洞测试批次的命中情况。
-4. [manifest.json](/home/huazi4ai/3gpp-protocol-lab/outputs/runtime/manifest.json)  
+4. `outputs/runtime/manifest.json`  
    看当前可复现输入物生成到了什么程度。
-5. [run_real_pipeline.py](/home/huazi4ai/3gpp-protocol-lab/scripts/run_real_pipeline.py) 和 [logic_fuzz.py](/home/huazi4ai/3gpp-protocol-lab/scripts/logic_fuzz.py)  
+5. `scripts/run_real_pipeline.py` 和 `scripts/logic_fuzz.py`  
    最后再看两条主链路的实现入口。
 
 ## 7. 后续建议
